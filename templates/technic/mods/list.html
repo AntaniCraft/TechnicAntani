@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block body %}
+<ul class="mods">
+    {% for mod in mods %}
+        <li>
+            <h3><a href="{{ mod.url }}">{{ mod.name }}</a> by {{ mod.author }}</h3>
+            <p>{{ mod.description }}</p>
+            <ul>
+                {% for k,v in mod.versions.items %}
+                    <li>{{ k }}
+                        <ul>
+                            {% for o in v %}
+                            <li>{{ o }}</li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+</ul>
+<div class="pagination">
+    <span class="step-links">
+        {% if mods.has_previous %}
+            <a href="?page={{ mods.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ mods.number }} of {{ mods.paginator.num_pages }}.
+        </span>
+
+        {% if mods.has_next %}
+            <a href="?page={{ mods.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+{% endblock %}

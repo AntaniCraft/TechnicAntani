@@ -1,0 +1,16 @@
+== TechnicAntani ==
+This is a rewrite of TechnicSolder in python-django
+
+== Why ==
+More, more features.
+
+# TODO Write them when I'm sober
+
+== Installing ==
+Too early boys, it's still prealpha stage
+
+== TODO ==
+Repair Cache
+Create modpack from manager
+Prettier HTML + template
+Multiple api key support?

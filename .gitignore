@@ -1,0 +1,6 @@
+db
+debug_toolbar
+*.iml
+.idea
+**/*.pyc
+**/*.pyo
