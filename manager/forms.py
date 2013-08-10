@@ -21,7 +21,7 @@ from manager.models import Build, Modpack
 
 class AddModForm(forms.Form):
     modtype = forms.ChoiceField(choices=(
-        (1, "Config Pack - BROKEN"),
+        #(1, "Config Pack - BROKEN"),
         (2, "Core Mod"),
         (3, "Normal"),
         (4, "Pre Packaged")

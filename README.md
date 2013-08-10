@@ -27,8 +27,8 @@ It's quite complicated at the moment.
 TODO
 
 ## TODO
- * Implement|Disable configpack upload
- * Prettier HTML + template
+ * Prettier HTML + templating
+ * User managing without django admin
  * Documentation
  * Multiple api key support?
  * Modpack import/export?
