@@ -1,7 +1,77 @@
-{% extends "base.html" %}
 {% comment %}
-This is the index page. It's public and you should probably edit that
+This is the index page. Its design is extended by all public pages
 {% endcomment %}
-{% block body %}
-    <a href="/login">Login</a>
-{% endblock %}
+<!DOCTYPE html>
+<html>
+<head>
+    {% block head %}
+    <title>Technic Antani Home</title>
+    {% endblock %}
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,500' rel='stylesheet' type='text/css'>
+    <style type="text/css">
+        html {
+            height: 90%;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Roboto",sans-serif;
+            font-weight: 300;
+            height: 100%;
+        }
+        .content{
+            width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-top: 50px;
+            border-right: 2px solid #464545;
+            border-left: 2px solid #464545;
+            padding-left: 15px;
+            padding-right: 15px;
+            height: 100%;
+            background-color: #eeeeee;
+        }
+        .content form{
+            border-top: 2px solid #464545;
+            border-bottom: 2px solid #464545;
+            padding-left: 15px;
+            padding-right: 15px;
+            background-color: #bbbbbb;
+            padding-bottom: 15px;
+        }
+        section.content {
+            width: 930px;
+            padding-left: 0;
+            padding-right: 0;
+        }
+        section.content div{
+            width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        section.content div input[type="password"],input[type="text"]{
+            width: 180px;
+        }
+    </style>
+</head>
+<body>
+    {% block body %}
+        <div class="content">
+            <h2>You are on TechnicAntani's Public Index.</h2>
+            <p>
+            This is still in development but it's in a usable state. If you find errors please report them to the
+            <a href="https://github.com/AntaniCraft/TechnicAntani/issues">official bug tracker</a>. You can also find the
+            wiki on github. Feel free to contribute.
+            </p>
+            <h3>License</h3>
+            <p>
+            All python code is under GPL3. You can distribute and modify html files as you wish. Consider them MIT licensed.
+            </p>
+            <h3>Editing</h3>
+            <p>
+            You can edit this page by editing templates/index.html in the TechnicAntani directory.
+            </p>
+        </div>
+    {% endblock %}
+</body>
+</html>

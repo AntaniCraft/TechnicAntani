@@ -33,7 +33,11 @@ from manager.mod_manager import ModManager, RawMod, checksum_file
 
 
 def index(request):
-    return render_to_response("index.html")
+    context = {
+        'modpacks': Modpack.objects.all(),
+        'builds': Build.objects.all()
+    }
+    return render(request, "index.html", context)
 
 
 def logout(request):
