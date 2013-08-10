@@ -28,6 +28,7 @@ urlpatterns = patterns('',
     url(r'^builds/([0-9]+?)/$', modpack_build_change),
     url(r'^builds/([0-9]+?)/(recommended)/$', modpack_build_flag),
     url(r'^builds/([0-9]+?)/(latest)/$', modpack_build_flag),
+    url(r'^builds/([0-9]+?)/clone/$', modpack_build_clone),
     url(r'^builds/add/([0-9]+?)/(.+?)/$', modpack_build_add),
     url(r'^builds/del/([0-9]+?)/([0-9]+?)/$', modpack_build_remove),
 

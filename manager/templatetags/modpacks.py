@@ -33,8 +33,8 @@ class ModpackVersions(template.Node):
         if len(builds)==0:
             return "<span>No builds yet</span>"
         for build in builds:
-            buf += "<li><a href=\"/modpacks/" + str(m.id) + "/"
-            buf += str(build.id) + "/\">" + build.version + "</a><li>"
+            buf += "<li><a href=\"/builds/"
+            buf += str(build.id) + "/\">" + build.version + "</a></li>"
         buf += "</ul>"
         return buf
 

@@ -6,7 +6,7 @@
     <ul class="builds">
     {% for build in builds %}
         <li>
-            <h3>{{ build.version }} - Minecraft {{ build.mcversion.version }}&nbsp;<a href="/modpacks/{{ modpack.id }}/{{ build.id }}">Edit</a></h3>
+            <h3>{{ build.version }} - Minecraft {{ build.mcversion.version }}&nbsp;<a href="/builds/{{ build.id }}">Edit</a></h3>
         </li>
     {% endfor %}
     </ul>

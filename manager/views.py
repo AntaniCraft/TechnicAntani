@@ -350,3 +350,23 @@ def modpack_build_flag(request, buildid, mode):
         b.recommended = True
         b.save()
     return HttpResponseRedirect("/modpacks/"+str(b.modpack.id))
+
+@login_required(login_url="/login")
+def modpack_build_clone(request, buildid):
+    b = Build.objects.get(pk=buildid)
+    if request.method == 'POST':
+        form = CreateBuildForm(request.POST)
+        if form.is_valid():
+            nb = Build()
+            nb.modpack = b.modpack
+            nb.mcversion = form.cleaned_data['mcversion']
+            nb.version = form.cleaned_data['version']
+            nb.save()
+            for mod in b.mods.all():
+                nb.mods.add(mod)
+            nb.save()
+
+            return HttpResponseRedirect("/builds/" + str(nb.id))
+    else:
+        form = CreateBuildForm()
+    return render(request, "technic/builds/clone.html", {'form': form, 'build': b})
