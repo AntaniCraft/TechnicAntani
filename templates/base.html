@@ -26,12 +26,12 @@ This is the base page. Its design is extended by all private templates in Techni
             float: right;
             padding: 15px;
         }
-        header,ul#menu a {
+        header a, ul#menu a {
             font-size: 1.5em;
             color: white;
             text-decoration: none;
         }
-        header,ul#menu a:hover {
+        header a:hover,ul#menu a:hover {
             color: #777777;
             text-decoration: underline;
         }
@@ -40,13 +40,26 @@ This is the base page. Its design is extended by all private templates in Techni
             padding: 0;
             margin: 0;
             background-color: #333333;
-            padding-bottom: 5px;
+            padding-right: 3px;
         }
         ul#menu li{
             display: inline-block;
+            height: 100%;
         }
         ul#menu li a{
+            display: block;
             font-size: 1em;
+            padding-bottom: 5px;
+            padding-left: 5px;
+            padding-right: 5px;
+            border-left: 2px solid #999999;
+            height: 100%;
+        }
+        ul#menu li a:hover{
+            border-left: 2px solid red;
+            background-color: #aaaaaa;
+            color: black;
+
         }
 
     </style>
@@ -63,7 +76,7 @@ This is the base page. Its design is extended by all private templates in Techni
             <li><a href="/modpacks/settings/">Settings</a></li>
             <li><a href="/mods/">Mods</a></li>
             <li><a href="/mods/upload/">Add Mod</a></li>
-            <li><a href="/modpacks/repair/">Repair</a></li>
+            <li><a href="/mods/repair/">Repair</a></li>
 
     </ul>
     {% block body %}{% endblock %}
