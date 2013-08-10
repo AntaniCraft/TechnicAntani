@@ -1,16 +1,22 @@
 {% extends "base.html" %}
 {% load modpacks %}
+{% block title %}
+    TechnicAntani Modpacks
+{% endblock %}
 {% block body %}
+    <section id="content">
 {% if modpacks %}
     <ul class="modpacks">
     {% for modpack in modpacks %}
         <li>
+        <img src="{{ modpack.getLogoUrl }}" />
             <h3><a href="/modpacks/{{ modpack.id }}/">{{ modpack.name }}</a></h3>
             {% modpack_versions modpack %}
         </li>
     {% endfor %}
     </ul>
 {% else %}
-    <h3 class="modpacks">No modpacks found. Ask your admin to create one</h3>
+        <h3 class="modpacks">No modpacks found. Create one</h3>
 {% endif %}
+    </section>
 {% endblock %}

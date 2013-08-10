@@ -31,7 +31,7 @@ class ModpackVersions(template.Node):
         m = Modpack.objects.get(pk=modpack.id)
         builds= Build.objects.filter(modpack=m)
         if len(builds)==0:
-            return "<span>No builds yet</span>"
+            return "<span class='warning'>No builds yet</span>"
         for build in builds:
             buf += "<li><a href=\"/builds/"
             buf += str(build.id) + "/\">" + build.version + "</a></li>"

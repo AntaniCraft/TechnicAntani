@@ -37,6 +37,13 @@ class Modpack(models.Model):
     def __unicode__(self):
         return self.slug
 
+    def getIconUrl(self):
+        return AntaniSetting.objects.get(key="repourl").value + "/" + self.slug + "/resources/icon.png"
+
+    def getLogoUrl(self):
+        return AntaniSetting.objects.get(key="repourl").value + "/" + self.slug + "/resources/logo_180.png"
+
+
 
 class Build(models.Model):
     version = models.CharField(max_length=20, help_text="Build version")
