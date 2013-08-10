@@ -23,9 +23,10 @@ from django.core import exceptions
 
 import tempfile, re
 import os.path
+from os import mkdir
 
 from manager.models import Modpack, Build, FileCache, ModCache, McVersion, AntaniSetting
-from manager.forms import AddModForm, ConfirmDataForm, CreateModpackForm
+from manager.forms import AddModForm, ConfirmDataForm, CreateBuildForm, CreateModpackForm
 from manager.mod_manager import ModManager, RawMod, checksum_file
 
 
@@ -40,18 +41,50 @@ def logout(request):
 
 @login_required(login_url="/login")
 def modpacks_index(request):
-    mps = []
-    for mp in Modpack.objects.all():
-        mps.append(mp)
     context = {
-        "modpacks": mps,
+        "modpacks": Modpack.objects.all(),
     }
     return render(request, "technic/index.html", context)
 
 
 @login_required(login_url="/login")
 def modpacks_create(request):
-    return render_to_response("technic/index.html")
+    if request.method == 'POST':
+        createM = CreateModpackForm(request.POST, request.FILES)
+        if createM.is_valid():
+            rootdir = AntaniSetting.objects.get(key="repopath").value
+            m = Modpack()
+            m.slug = createM.cleaned_data["slug"]
+            m.name = createM.cleaned_data["name"]
+            m.url = createM.cleaned_data["url"]
+            mdir = rootdir + os.path.sep + m.slug + os.path.sep
+            if not os.path.exists(mdir):
+                mkdir(mdir)
+            resdir = mdir + os.path.sep + "resources" + os.path.sep
+            if not os.path.exists(resdir):
+                mkdir(resdir)
+            with open(resdir + "background.jpg", 'wb+') as destination:
+                for chunk in request.FILES['background'].chunks():
+                    destination.write(chunk)
+                destination.close()
+            m.background_md5 = checksum_file(resdir+"background.jpg")
+            with open(resdir + "logo_180.png", 'wb+') as destination:
+                for chunk in request.FILES['logo'].chunks():
+                    destination.write(chunk)
+                destination.close()
+            m.logo_md5 = checksum_file(resdir+"logo_180.png")
+            with open(resdir + "icon.png", 'wb+') as destination:
+                for chunk in request.FILES['icon'].chunks():
+                    destination.write(chunk)
+                destination.close()
+            m.icon_md5 = checksum_file(resdir+"icon.png")
+            m.save()
+    else:
+        createM = CreateModpackForm()
+    context = {
+        'form': createM
+    }
+    return render(request, "technic/create.html", context)
 
 
 @login_required(login_url="/login")
@@ -69,7 +102,7 @@ def modpack(request, id):
 def modpack_build_create(request, modpackid):
     m = Modpack.objects.get(pk=modpackid)
     if request.method == 'POST':
-        form = CreateModpackForm(request.POST)
+        form = CreateBuildForm(request.POST)
         if form.is_valid():
             b = Build()
             b.modpack = m
@@ -79,8 +112,8 @@ def modpack_build_create(request, modpackid):
 
             return HttpResponseRedirect("/builds/" + str(b.id))
     else:
-        form = CreateModpackForm()
-    return render(request, "technic/create.html", {'form': form, 'mod': m})
+        form = CreateBuildForm()
+    return render(request, "technic/builds/create.html", {'form': form, 'mod': m})
 
 
 @login_required(login_url="/login")

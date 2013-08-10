@@ -16,7 +16,7 @@
 #############################################################################
 
 from django import forms
-from manager.models import Build
+from manager.models import Build, Modpack
 
 
 class AddModForm(forms.Form):
@@ -41,7 +41,17 @@ class ConfirmDataForm(forms.Form):
     url = forms.URLField(max_length=255,label="Mod Home Page")
 
 
-class CreateModpackForm(forms.ModelForm):
+class CreateBuildForm(forms.ModelForm):
     class Meta:
         model = Build
         fields = ['mcversion', 'version']
+
+
+class CreateModpackForm(forms.ModelForm):
+    logo = forms.ImageField(help_text="PNG 180x110")
+    icon = forms.ImageField(help_text="PNG 32x32")
+    background = forms.ImageField(help_text="JPG 800x510")
+
+    class Meta:
+        model = Modpack
+        fields = ['slug', 'name', 'url']
