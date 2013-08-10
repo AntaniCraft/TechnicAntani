@@ -34,7 +34,7 @@ class ModpackVersions(template.Node):
             return "<span class='warning'>No builds yet</span>"
         for build in builds:
             buf += "<li><a href=\"/builds/"
-            buf += str(build.id) + "/\">" + build.version + "</a></li>"
+            buf += str(build.id) + "/\">" + build.version + "</a>&nbsp;<a href=\"/builds/"+str(build.id)+"/clone/\">Clone</li>"
         buf += "</ul>"
         return buf
 

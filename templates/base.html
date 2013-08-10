@@ -61,7 +61,18 @@ This is the base page. Its design is extended by all private templates in Techni
             color: black;
 
         }
-
+        .modpacks{
+            list-style: none;
+            margin-left: 5px;
+            padding-left: 15px;
+            border-left: 3px solid #aaaaaa;
+        }
+        a:visited, .modpacks a {
+            color: black;
+        }
+        .modpacks > li{
+            border-bottom: 3px solid #aaaaaa;
+        }
     </style>
     {% block head %}
     <title>Technic Antani</title>
