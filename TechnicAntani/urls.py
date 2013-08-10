@@ -26,6 +26,8 @@ urlpatterns = patterns('',
     url(r'^modpacks/([0-9]+?)/$', modpack),  # Shows builds
     url(r'^modpacks/([0-9]+?)/create$', modpack_build_create),  # Creates a build
     url(r'^builds/([0-9]+?)/$', modpack_build_change),
+    url(r'^builds/([0-9]+?)/(recommended)/$', modpack_build_flag),
+    url(r'^builds/([0-9]+?)/(latest)/$', modpack_build_flag),
     url(r'^builds/add/([0-9]+?)/(.+?)/$', modpack_build_add),
     url(r'^builds/del/([0-9]+?)/([0-9]+?)/$', modpack_build_remove),
 

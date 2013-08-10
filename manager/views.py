@@ -333,3 +333,20 @@ def mods_repair_do(request, what):
                 for b in bs:
                     b.delete()
                 fc.delete()
+
+@login_required(login_url="/login")
+def modpack_build_flag(request, buildid, mode):
+    b = Build.objects.get(pk=buildid)
+    if mode == "latest":
+        for bn in Build.objects.all():
+            bn.latest = False
+            bn.save()
+        b.latest = True
+        b.save()
+    else:
+        for bn in Build.objects.all():
+            bn.recommended = False
+            bn.save()
+        b.recommended = True
+        b.save()
+    return HttpResponseRedirect("/modpacks/"+str(b.modpack.id))
