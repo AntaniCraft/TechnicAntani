@@ -135,7 +135,7 @@ def modpack_build_change(request, buildid):
 
     context = {
         'modpack': b.modpack,
-        'build': b.version,
+        'build': b,
         'mcver': b.mcversion.version,
         'mods_installed': b.mods.all(),
         'mods_available': mods_listed

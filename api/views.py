@@ -43,7 +43,7 @@ def modpack_list(request):
 
 def modpack(request, slug):
     result = {}
-    m = Modpack.objects.get(name=slug)
+    m = Modpack.objects.get(slug=slug)
     result["name"] = m.slug
     result["display_name"] = m.name
     result["url"] = m.url

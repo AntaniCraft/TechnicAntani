@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block body %}
 {% load modpacks %}
-    <h2>{{ modpack.name }} - {{ build }} for Minecraft {{ mcver }}</h2>
+    <h2>{{ modpack.name }} - {{ build.version }} for Minecraft {{ mcver }}</h2>
     <ul id="installed_mods">
         {% for mod in mods_installed %}
             <li>
@@ -13,7 +13,7 @@
         {% for mod in mods_available %}
                     {% for ver in mod|mod_versions:mcver %}
                         <li>
-                            <a href="/builds/add/{{ modpack.id }}/{{ mod.slug }}-{{ mcver }}-{{ ver }}/">{{ mod.name }} {{ ver }}</a>
+                            <a href="/builds/add/{{ build.id }}/{{ mod.slug }}-{{ mcver }}-{{ ver }}/">{{ mod.name }} {{ ver }}</a>
                         </li>
                     {% endfor %}
         {% endfor %}
