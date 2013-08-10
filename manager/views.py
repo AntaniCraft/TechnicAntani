@@ -234,5 +234,69 @@ def mods_submit(request):
 
 
 @login_required(login_url="/login")
-def mods_repair(request): # TODO
-    return render_to_response("technic/index.html")
+def mods_repair(request):
+    rootdir = AntaniSetting.objects.get(key="repopath").value
+    brokenCache = []
+    brokenBuilds = {}
+    orphanFc = []
+    orphanM = {}
+    for fc in FileCache.objects.all():
+        if not os.path.isfile(rootdir + os.path.sep + fc.modInfo.name + os.path.sep + fc.file + ".zip"):
+            brokenCache.append(fc)
+        bs = Build.objects.filter(mods__pk=fc.id)
+        if len(bs) < 1:
+            orphanFc.append(fc)
+
+    for fc in brokenCache:
+        bs=Build.objects.filter(mods__pk=fc.id)
+        brokenBuilds[fc] = []
+        for b in bs:
+            brokenBuilds[fc].append(b)
+
+    for mc in ModCache.objects.all():
+        bs = Build.objects.filter(modInfo__pk=mc.id)
+        found = False
+        for b in bs:
+            if not b in orphanFc:
+                found = True
+                break
+        if not found:
+            orphanM[mc] = bs
+
+    context = {
+        "broken": brokenBuilds,
+        "orphanFiles": orphanFc,
+        "orphanMods": orphanM
+    }
+
+    return render(request,"technic/repair.html",context)
+
+
+@login_required(login_url="/login")
+def mods_repair_do(request, what):
+    rootdir = AntaniSetting.objects.get(key="repopath").value
+    cache = True
+    broken = True
+    if what == "cache":
+        broken = False
+    if what == "broken":
+        cache = False
+
+    if cache:
+        for fc in FileCache.objects.all():
+            bs = Build.objects.filter(mods__pk=fc.id)
+            if len(bs) < 1:
+                fc.delete()
+
+        for mc in ModCache.objects.all():
+            bs = Build.objects.filter(modInfo__pk=mc.id)
+            if len(bs) < 1:
+                mc.delete()
+
+    if broken:
+        for fc in FileCache.objects.all():
+            if not os.path.isfile(rootdir + os.path.sep + fc.modInfo.name + os.path.sep + fc.file + ".zip"):
+                bs=Build.objects.filter(mods__pk=fc.id)
+                for b in bs:
+                    b.delete()
+                fc.delete()

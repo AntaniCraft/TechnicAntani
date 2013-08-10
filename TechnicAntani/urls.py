@@ -31,6 +31,7 @@ urlpatterns = patterns('',
 
     url(r'^mods/$', mods_list),
     url(r'^mods/repair/$', mods_repair),
+    url(r'^mods/repair/(.+?)/$', mods_repair_do),
     url(r'^mods/upload/$', mods_upload),
     url(r'^mods/submit/$', mods_submit),
 

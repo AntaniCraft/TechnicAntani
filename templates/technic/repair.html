@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block body %}
+    <ul class="broken">
+    {% for k,v in brokenBuilds.items %}
+        <li>
+            {{ k.version }} of {{ k.modpack.name }} is broken.
+            <ul class="errors">
+                {% for fc in v %}
+                    <li>
+                    {{ fc.modInfo.name }}/{{ fc.file }}.zip is missing.
+                    </li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+    </ul>
+    <ul class="orphans,mods">
+    {% for k,v in orphanMods.items %}
+        <li>
+            {{ k.pretty_name }} is not used by any build, but is cached.
+            <ul class="orphans,files">
+                {% for fc in v %}
+                    <li>
+                    {{ fc.file }}.zip is not used in any build but is cached.
+                    </li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+    </ul>
+    <ul class="orphans,files">
+        {% for fc in orphanFiles %}
+            <li>
+            {{ fc.file }}.zip is not used in any build but is cached.
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="/modpack/repair/all/">Repair All</a><a href="/modpack/repair/cache/">Repair Broken</a><a href="/modpack/repair/broken/">Repair Broken</a>
+{% endblock %}
