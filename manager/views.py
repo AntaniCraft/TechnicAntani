@@ -24,9 +24,11 @@ from django.core import exceptions
 import tempfile, re
 import os.path
 from os import mkdir
+import urllib2
+import json
 
 from manager.models import Modpack, Build, FileCache, ModCache, McVersion, AntaniSetting
-from manager.forms import AddModForm, ConfirmDataForm, CreateBuildForm, CreateModpackForm
+from manager.forms import AddModForm, ConfirmDataForm, CreateBuildForm, CreateModpackForm, AntaniSettings
 from manager.mod_manager import ModManager, RawMod, checksum_file
 
 
@@ -370,3 +372,52 @@ def modpack_build_clone(request, buildid):
     else:
         form = CreateBuildForm()
     return render(request, "technic/builds/clone.html", {'form': form, 'build': b})
+
+@login_required(login_url="/login")
+def modpack_settings(request):
+    try:
+        fapikey = AntaniSetting.objects.get(key="apikey")
+    except exceptions.ObjectDoesNotExist:
+        fapikey = AntaniSetting()
+        fapikey.key = "apikey"
+        fapikey.value = ""
+    try:
+        frepourl = AntaniSetting.objects.get(key="repourl")
+    except exceptions.ObjectDoesNotExist:
+        frepourl = AntaniSetting()
+        frepourl.key = "repourl"
+        frepourl.value = ""
+    try:
+        frepopath = AntaniSetting.objects.get(key="repopath")
+    except exceptions.ObjectDoesNotExist:
+        frepopath = AntaniSetting()
+        frepopath.key = "repopath"
+        frepopath.value = ""
+    if request.method == 'POST':
+        form = AntaniSettings(request.POST)
+        if form.is_valid():
+            fapikey.value = form.cleaned_data["apikey"]
+            fapikey.save()
+            frepopath.value = form.cleaned_data["repopath"]
+            frepopath.save()
+            frepourl.value = form.cleaned_data["repourl"]
+            frepourl.save()
+
+    else:
+        form = AntaniSettings(initial={
+            'apikey': fapikey.value,
+            'repourl': frepourl.value,
+            'repopath': frepopath.value,
+        })
+    return render(request, "technic/settings.html", {'form': form})
+
+@login_required(login_url="/login")
+def modpack_settings_mcvers(request):
+    resp = urllib2.urlopen("http://www.technicpack.net/api/minecraft")
+    obj = json.loads(resp.read())
+    for k, v in obj.iteritems():
+        t = McVersion()
+        t.version = k
+        t.checksum = v["md5"]
+        t.save()
+    return HttpResponseRedirect("/modpacks/settings/")

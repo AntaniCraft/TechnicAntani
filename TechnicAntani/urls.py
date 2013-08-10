@@ -21,7 +21,9 @@ urlpatterns = patterns('',
     url(r'^logout/$', logout),
 
     url(r'^modpacks/$', modpacks_index),
-    url(r'^modpacks/create/$', modpacks_create),  # TODO Create modpacks view
+    url(r'^modpacks/create/$', modpacks_create),
+    url(r'^modpacks/settings/$', modpack_settings),
+    url(r'^modpacks/settings/mcvers$', modpack_settings_mcvers),
 
     url(r'^modpacks/([0-9]+?)/$', modpack),  # Shows builds
     url(r'^modpacks/([0-9]+?)/create$', modpack_build_create),  # Creates a build

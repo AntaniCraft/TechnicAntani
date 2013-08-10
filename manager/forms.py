@@ -55,3 +55,12 @@ class CreateModpackForm(forms.ModelForm):
     class Meta:
         model = Modpack
         fields = ['slug', 'name', 'url']
+
+
+class AntaniSettings(forms.Form):
+    apikey = forms.CharField(max_length=32, label="API key", help_text="Technic Platform API key")
+    repopath = forms.CharField(max_length=255, label="Path to mod repo",
+                               help_text="This should be readable/writable from TechnicAntani, so ensure it's running"
+                                         " with adequate rights")
+    repourl = forms.URLField(max_length=255, label="Url to mod repo",
+                             help_text="This should be accessible from the web.")
