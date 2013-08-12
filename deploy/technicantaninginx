@@ -1,0 +1,23 @@
+server {
+    listen 80;
+    server_name myhostname.com; # Your domain
+    access_log /var/log/nginx/sample_project.access.log;
+    error_log /var/log/nginx/sample_project.error.log;
+
+    # https://docs.djangoproject.com/en/dev/howto/static-files/#serving-static-files-in-production
+    # location /static/ { # STATIC_URL
+    #    alias /home/antani/TechnicAntani/static/; # STATIC_ROOT
+    #    expires 30d;
+    #}
+    
+    # It's enough for this to be readable by nginx
+    location /repo/ { # So repourl is http://myhostname.com/repo/
+        alias /home/antani/repo/;  # This is repopath setting
+        expires 30d;
+    }
+
+    location / {
+        include fastcgi_params;
+        fastcgi_pass 127.0.0.1:3000;
+    }
+}
