@@ -114,8 +114,24 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
+        'django': {
+            'handlers': ['logfile'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'manager': {
+            'handlers': ['logfile'],
+            'level': 'DEBUG',  # Or maybe INFO or WARNING
+            'propagate': False
+        },
+        'api': {
+            'handlers': ['logfile'],
+            'level': 'DEBUG',  # Or maybe INFO or WARNING
+            'propagate': False
+        },
     }
 }
 INTERNAL_IPS = ('127.0.0.1',)
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
+FORCE_SCRIPT_NAME = ""
