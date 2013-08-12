@@ -26,7 +26,7 @@ urls = patterns('',
     url(r'^modpack/(.+?)/$', modpack),
 
     url(r'^verify/$', verify),
-    url(r'^verify/(.+?)/$', verify),
+    url(r'^verify/(.+?)$', verify),
 
     url(r'^mod/$', mod),
     url(r'^mod/(.+?)/$', mod)
