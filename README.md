@@ -27,7 +27,8 @@ It's quite complicated at the moment.
 TODO
 
 ## TODO
- * Prettier HTML + templating
+ * First launch wizard
+ * Prettier HTML + templating (UGH. I give up. I need help)
  * User managing without django admin
  * Documentation
  * Multiple api key support?
