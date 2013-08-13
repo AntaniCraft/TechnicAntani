@@ -68,7 +68,7 @@ def modpack_build(request, slug, build):
     result["minecraft"] = b.mcversion.version
     result["minecraft_md5"] = b.mcversion.checksum
     result["forge"] = None
-    m = []
+    result["mods"] = []
     for mod in b.mods.all():
         m = {
             "name": mod.modInfo.name,
@@ -76,7 +76,7 @@ def modpack_build(request, slug, build):
             "md5": mod.checksum,
             "url": fucking_php_escape(mod.getUrl()),
         }
-    result["mods"] = m
+        result["mods"].append(m)
     return HttpResponse(json.dumps(result).replace("\\\\","\\"))
 
 
