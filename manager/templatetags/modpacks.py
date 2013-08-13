@@ -58,11 +58,13 @@ def modpack_versions(parser, token):
 def mod_versions(value, arg):
     mpath = AntaniSetting.objects.get(key="repopath").value + path.sep + value.slug
     versions = []
-    for f in listdir(mpath):
-        if f != "Metadata":
-            pieces = f.split("-")
-            if pieces[1] == arg:
-                app = pieces[2].replace(".zip", "")
-                versions.append(app)
+    files = listdir(mpath)
+    if "Metadata" in files:
+        for f in files:
+            if f != "Metadata":
+                pieces = f.split("-")
+                if pieces[1] == arg:
+                    app = pieces[2].replace(".zip", "")
+                    versions.append(app)
 
     return versions
