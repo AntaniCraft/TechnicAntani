@@ -60,7 +60,7 @@ class ModManager:
                 self.mods.append(Mod(root, files))
 
     def add_mod(self, slug, name, description, author, url, mcver, ver, tempfile):
-        slugdir = self.fspath.value + path.sep + slug
+        slugdir = self.fspath.value + path.sep + "mods" + path.sep + slug
         if not path.exists(slugdir):
             mkdir(slugdir)
         move(tempfile, self.fspath.value + path.sep + slug + path.sep + slug + "-" + mcver + "-" + ver + ".zip")
