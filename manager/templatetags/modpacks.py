@@ -63,7 +63,7 @@ def mod_versions(value, arg):
         for f in files:
             if f != "Metadata":
                 pieces = f.split("-")
-                if pieces[1] == arg:
+                if len(pieces) == 3 and pieces[1] == arg:
                     app = pieces[2].replace(".zip", "")
                     versions.append(app)
 
