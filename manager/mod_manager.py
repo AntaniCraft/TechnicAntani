@@ -66,7 +66,7 @@ class ModManager:
         slugdir += path.sep + slug
         if not path.exists(slugdir):
             mkdir(slugdir)
-        move(tempfile, self.fspath.value + path.sep + slug + path.sep + slug + "-" + mcver + "-" + ver + ".zip")
+        move(tempfile, self.fspath.value + path.sep + "mods" + path.sep + slug + path.sep + slug + "-" + mcver + "-" + ver + ".zip")
         c = ConfigParser()
         c.add_section("Mod")
         c.set("Mod", "Name", name)
