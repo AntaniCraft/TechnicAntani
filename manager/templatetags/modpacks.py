@@ -56,7 +56,7 @@ def modpack_versions(parser, token):
 
 @register.filter()
 def mod_versions(value, arg):
-    mpath = AntaniSetting.objects.get(key="repopath").value + path.sep + value.slug
+    mpath = AntaniSetting.objects.get(key="repopath").value + path.sep + "mods" + path.sep + value.slug
     versions = []
     files = listdir(mpath)
     if "Metadata" in files:
