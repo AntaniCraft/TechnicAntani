@@ -103,31 +103,31 @@ class RawMod:
         try:
             modinfo = obj[0]
             self.modid = modinfo["modid"]
-        except KeyError: #YOLO
+        except Exception: #YOLO
             pass
         try:
             self.name = modinfo["name"]
-        except KeyError: #YOLO
+        except Exception: #YOLO
             pass
         try:
             self.desc = modinfo["description"]
-        except KeyError: #YOLO
+        except Exception: #YOLO
             pass
         try:
             self.ver = modinfo["version"]
-        except KeyError: #YOLO
+        except Exception: #YOLO
             pass
         try:
             self.url = modinfo["url"]
-        except KeyError: #YOLO
+        except Exception: #YOLO
             pass
         try:
             self.authors = ",".join(modinfo["authors"])
-        except KeyError: #YOLO
+        except Exception: #YOLO
             pass
         try:
             self.mcversion = modinfo["mcversion"]
-        except KeyError: #YOLO
+        except Exception: #YOLO
             pass
 
     def pack(self, fname):
