@@ -92,8 +92,12 @@ class RawMod:
 
     def readMetadata(self):
         z = zipfile.ZipFile(self.jarpath)
-        f = z.open("mcmod.info")
-        str = f.read()
+        str = ""
+        try:
+            f = z.open("mcmod.info")
+            str = f.read()
+        except KeyError: #YOLO
+            return
         obj = json.loads(str)
         z.close()
         try:
