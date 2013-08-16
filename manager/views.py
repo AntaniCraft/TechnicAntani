@@ -183,7 +183,7 @@ def modpack_build_add(request, buildid, file):
                 mccver = McVersion.objects.all()[-1]
             fc.mcversion = mccver
             fc.checksum = checksum_file(AntaniSetting.objects.get(key="repopath").value + os.path.sep +
-                                        slug + os.path.sep + file + ".zip")
+                                        + "mods" + os.path.sep + slug + os.path.sep + file + ".zip")
             fc.save()
             b.mods.add(fc)
             b.save()
