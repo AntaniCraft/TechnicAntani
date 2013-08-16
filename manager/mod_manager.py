@@ -108,12 +108,12 @@ class RawMod:
         except KeyError: #YOLO
             pass
 
-    def pack(self):
+    def pack(self, fname):
         tmpfile = tempfile.mktemp(suffix=".zip")
         if self.type == ModType.PREPACKAGED:
             return self.jarpath
         zpack = zipfile.ZipFile(tmpfile, "w")
-        name = path.basename(self.jarpath)
+        name = fname
         zipname = ""
         if self.type == ModType.NORMAL:
             zipname = "mods/" + name

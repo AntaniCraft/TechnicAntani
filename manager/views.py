@@ -257,6 +257,7 @@ def mods_submit(request):
     if form.is_valid():
         raw = RawMod(form.cleaned_data['filepath'], form.cleaned_data['filepath'])
         raw.readMetadata()
+        raw.type = form.cleaned_data['type']
         mm = ModManager()
         mm.add_mod(
             form.cleaned_data['slug'],
@@ -266,7 +267,7 @@ def mods_submit(request):
             form.cleaned_data['url'],
             form.cleaned_data['mcversion'],
             form.cleaned_data['version'],
-            raw.pack()
+            raw.pack(form.cleaned_data['slug']+"_"+form.cleaned_data['version'])
         )
         return HttpResponseRedirect("/mods")
     return render(request, "technic/mods/add_confirm.html", {'form': form})
