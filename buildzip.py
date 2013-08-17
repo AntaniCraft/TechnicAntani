@@ -33,7 +33,7 @@ def main():
     print("Overwriting out.zip")
     z = zipfile.ZipFile("out.zip", mode="w", compression=zipfile.ZIP_DEFLATED)
     for fc in build.mods.all():
-        slug, mcver, ver = fc.name.split("-")
+        slug, mcver, ver = fc.file.split("-")
         mz = zipfile.ZipFile(fspath + path.sep + "mods" + path.sep + slug + path.sep + slug + "-" + mcver + "-"
                              + ver + ".zip", mode="r")
         for fzipped in mz.namelist():
