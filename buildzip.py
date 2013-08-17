@@ -17,80 +17,35 @@
 
 from __future__ import print_function
 import sys
-from getpass import getpass
 import os
+import zipfile
+from os import path
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "TechnicAntani.settings")
-
 # here be dragons (aka django)
-from django.contrib.auth.models import User
+from manager.models import *
 
 
-def list_users(args):
-    quiet = False
-    if "-q" in args:
-        quiet = True
-    if not quiet:
-        print("ID\tusername")
-        print("------------")
-    for u in User.objects.all():
-        print(str(u.id) + " " + u.username)
+def main():
+    fspath = AntaniSetting.objects.get(key="repopath").value
+    id = sys.argv[1]
+    build = Build.objects.get(pk=id)
+    print("Overwriting out.zip")
+    z = zipfile.ZipFile("out.zip", mode="w", compression=zipfile.ZIP_DEFLATED)
+    for fc in build.mods.all():
+        slug, mcver, ver = fc.name.split("-")
+        mz = zipfile.ZipFile(fspath + path.sep + "mods" + path.sep + slug + path.sep + slug + "-" + mcver + "-"
+                             + ver + ".zip", mode="r")
+        for fzipped in mz.namelist():
+            z.write(fzipped, mz.open(fzipped, mode="rb").read())
+        mz.close()
+    z.close()
 
 
-def create_user(args):
-    if len(args) < 1:
-        print_help()
-    x = User()
-    x.username = args[0]
-    if len(args) == 2:
-        x.email = args[1]
-    x.set_password(getpass())
-    x.save()
-    print("User created.")
 
-
-def change_pass(args):
-    if len(args) < 1:
-        print_help()
-    x = User.objects.get(pk=args[0])
-    x.set_password(getpass())
-    x.save()
-    print("Password changed.")
-
-
-def delete_user(args):
-    if len(args) < 1:
-        print_help()
-    x = User.objects.get(pk=args[0])
-    x.delete()
-    print("User deleted.")
-
-
-def main(args):
-    if args[0] == "list":
-        list_users(args[1:])
-    elif args[0] == "create":
-        create_user(args[1:])
-    elif args[0] == "chpass":
-        change_pass(args[1:])
-    elif args[0] == "delete":
-        delete_user(args[1:])
-    else:
-        print_help()
-
-
-def print_help():
-    print("""Usage:
-\tlist [-q]
-\tcreate name [email]
-\tchpass id
-\tdelete id
-          """)
-    sys.exit(0)
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print_help()
+        print("Please give me the ID of the build to package. You can get the ID from the URL when editing the build.")
     else:
-        main(sys.argv[1:])
-
+        main()
