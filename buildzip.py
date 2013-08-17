@@ -34,11 +34,11 @@ def main():
     z = zipfile.ZipFile("out.zip", mode="w", compression=zipfile.ZIP_DEFLATED)
     for fc in build.mods.all():
         slug, mcver, ver = fc.file.split("-")
-        print("Adding "+ slug + "v" + ver)
+        print("Adding "+ slug + " v" + ver)
         mz = zipfile.ZipFile(fspath + path.sep + "mods" + path.sep + slug + path.sep + slug + "-" + mcver + "-"
                              + ver + ".zip", mode="r")
         for fzipped in mz.namelist():
-            z.write(fzipped, mz.open(fzipped, mode="r").read())
+            z.writestr(fzipped, mz.open(fzipped, mode="r").read())
         mz.close()
     z.close()
 
