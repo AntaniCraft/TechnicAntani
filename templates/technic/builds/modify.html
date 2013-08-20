@@ -7,7 +7,7 @@
     {% if mods_installed %}
         {% for mod in mods_installed %}
             <li>
-               {{ mod.modInfo.name }} {{ mod.version }}<a href="/builds/del/{{ modpack.id }}/{{ mod.id }}/">Remove</a>
+               {{ mod.modInfo.name }} {{ mod.version }}<a href="/builds/del/{{ build.id }}/{{ mod.id }}/">Remove</a>
             </li>
         {% endfor %}
     {% else %}
