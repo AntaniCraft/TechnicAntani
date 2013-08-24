@@ -2,7 +2,33 @@
 {% block body %}
     <form action="/modpacks/create/" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
+    <div class="form-group">
+        <label for="id_slug">Slug:</label>
+        <input type="text" maxlength="30" class="form-control" id="id_slug" name="{{ form.slug.name }}" placeholder="{{ form.slug.help_text }}">
+    </div>
+    <div class="form-group">
+        <label for="id_name">Name:</label>
+        <input type="text" maxlength="255" class="form-control" id="id_name" name="{{ form.name.name }}" placeholder="{{ form.name.help_text }}">
+    </div>
+    <div class="form-group">
+        <label for="id_url">Homepage:</label>
+        <input type="text" maxlength="200" class="form-control" id="id_url" name="{{ form.url.name }}" placeholder="{{ form.url.help_text }}">
+    </div>
+    <div class="form-group">
+        <label for="id_logo">Logo Image:</label>
+        <input type="file" id="id_logo" name="{{ form.logo.name }}">
+        <p class="help-block">{{ form.logo.help_text }}</p>
+    </div>
+    <div class="form-group">
+        <label for="id_logo">Icon:</label>
+        <input type="file" id="id_logo" name="{{ form.icon.name }}">
+        <p class="help-block">{{ form.icon.help_text }}</p>
+    </div>
+    <div class="form-group">
+        <label for="id_logo">Background:</label>
+        <input type="file" id="id_logo" name="{{ form.background.name }}">
+        <p class="help-block">{{ form.background.help_text }}</p>
+    </div>
     <input type="submit" value="Submit">
     </form>
 {% endblock %}

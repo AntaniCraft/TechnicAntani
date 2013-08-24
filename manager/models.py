@@ -28,7 +28,8 @@ class McVersion(models.Model):
 
 class Modpack(models.Model):
     name = models.CharField(max_length=255, help_text="Name of the modpack")
-    slug = models.SlugField(max_length=30, help_text="Identifier for the modpack")
+    slug = models.SlugField(max_length=30, help_text="Identifier for the modpack. Only english letters and underscore (_"
+                                                     ") is permitted")
     url = models.URLField(help_text="Home page for the modpack")
     logo_md5 = models.CharField(max_length=32)
     icon_md5 = models.CharField(max_length=32)

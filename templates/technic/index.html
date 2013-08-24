@@ -19,7 +19,7 @@
                 <h3 class="media-heading">
                     <a href="/modpacks/{{ modpack.id }}/">{{ modpack.name }}</a>
                 </h3>
-                <div>
+                <div style="padding: 3px;">
                 {% modpack_versions modpack %}
                 </div>
             </div>
@@ -27,7 +27,7 @@
         <hr>
     {% endfor %}
 {% else %}
-    <div class="alert alert-warning">
+    <div style="margin-top: 20px" class="alert alert-warning">
         <h2>No modpacks found in the database.</h2>
     </div>
 {% endif %}

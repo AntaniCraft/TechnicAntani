@@ -48,9 +48,11 @@ class CreateBuildForm(forms.ModelForm):
 
 
 class CreateModpackForm(forms.ModelForm):
-    logo = forms.ImageField(help_text="PNG 180x110")
-    icon = forms.ImageField(help_text="PNG 32x32")
-    background = forms.ImageField(help_text="JPG 800x510")
+    logo = forms.ImageField(help_text="Logo must be a PNG image, dimension 180x110. This image is the first one visible"
+                                      " to the user in the launcher.")
+    icon = forms.ImageField(help_text="Icon must be a PNG square image (32x32 will be ok). It's visible in the tray when"
+                                      " a user launches your modpack")
+    background = forms.ImageField(help_text="The launcher background. It must be a JPG - size 800x510")
 
     class Meta:
         model = Modpack
