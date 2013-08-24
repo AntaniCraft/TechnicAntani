@@ -65,4 +65,4 @@ class AntaniSettings(forms.Form):
                                help_text="This should be readable/writable from TechnicAntani, so ensure it's running"
                                          " with adequate rights")
     repourl = forms.URLField(max_length=255, label="Url to mod repo",
-                             help_text="This should be accessible from the web.")
+                             help_text="This is repopath exposed to the web.")

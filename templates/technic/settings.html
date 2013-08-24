@@ -1,8 +1,29 @@
 {% extends "base.html" %}
+{% block menulinks %}
+    <li><a href="/modpacks/">Home</a></li>
+    <li class="active"><a href="/modpacks/settings/">Settings</a></li>
+    <li><a href="/mods/">Mods</a></li>
+    <li><a href="/mods/upload/">Add Mod</a></li>
+    <li><a href="/mods/repair/">Repair</a></li>
+{% endblock %}
 {% block body %}
     <form action="/modpacks/settings/" method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
-    <input type="submit" value="Submit">
+        <div class="form-group">
+            <label for="id_api">API Key:</label>
+            <input type="text" maxlength="{{ form.apikey.max_length }}" class="form-control" id="id_api" name="{{ form.apikey.name }}" placeholder="API Key">
+            <p class="help-block">{{ form.apikey.help_text }}</p>
+        </div>
+        <div class="form-group">
+            <label for="id_repopath">Repo Path:</label>
+            <input type="text" maxlength="{{ form.repopath.max_length }}" class="form-control" id="id_repopath" name="{{ form.repopath.name }}" placeholder="Absolute path. Should start with /">
+            <p class="help-block">{{ form.repopath.help_text }}</p>
+        </div>
+        <div class="form-group">
+            <label for="id_url">Repo URL:</label>
+            <input type="text" maxlength="{{ form.repourl.max_length }}" class="form-control" id="id_repourl" name="{{ form.repourl.name }}" placeholder="URL">
+            <p class="help-block">{{ form.repourl.help_text }}</p>
+        </div>
+    <input class="btn btn-default" type="submit" value="Submit">
     </form>
 {% endblock %}
