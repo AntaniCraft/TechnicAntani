@@ -27,15 +27,21 @@ class ModpackVersions(template.Node):
         self.modpack = template.Variable(modpack)
 
     def writeList(self, modpack):
-        buf = "<ul>"
+        buf = ""
         m = Modpack.objects.get(pk=modpack.id)
         builds= Build.objects.filter(modpack=m)
-        if len(builds)==0:
-            return "<span class='warning'>No builds yet</span>"
+        if len(builds) == 0:
+            return "<h4 class='warning'>No builds yet</h4>"
         for build in builds:
-            buf += "<li><a href=\"/builds/"
-            buf += str(build.id) + "/\">" + build.version + "</a>&nbsp;<a href=\"/builds/"+str(build.id)+"/clone/\">Clone</li>"
-        buf += "</ul>"
+            cls = "label"
+            if build.recommended:
+                cls = "label label-success"
+            elif build.latest:
+                cls = "label label-warning"
+            if build.recommended and build.latest:
+                cls = "label label-primary"
+            buf += "<a href=\"/builds/"
+            buf += str(build.id) + "/\" class=\""+cls+"\">" + build.version + "</a></span>"
         return buf
 
     def render(self, context):

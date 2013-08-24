@@ -7,31 +7,36 @@
 {% endblock %}
 
 {% block body %}
-  <section class="content">
+  <section class="container" style="margin-top: 5%">
+    <div class="page-header">
+        <h1>Technic Antani Login</h1>
+    </div>
+    <div class="jumbotron">
     {% if form.errors %}
-      <div class="errors">
+      <div class="alert alert-danger">
         <p>Your username and password didn't match, please try again.</p>
       </div>
     {% endif %}
     <form method="post" action=".">
         {% csrf_token %}
     <div>
-    <h3>Technic Antani Login</h3>
+
       <p>
         <label for="id_username">Username:</label>
-        {{ form.username }}
+        <input id="id_username" type="text" name="{{ form.username.name }}" class="form-control">
       </p>
       <p>
         <label for="id_password">Password:</label>
-        {{ form.password }}
+         <input type="password" id="id_password" name="{{ form.password.name }}" class="form-control" >
       </p>
       {% if next %}
         <input type="hidden" name="next" value="{{ next }}" />
       {% else %}
         <input type="hidden" name="next" value="/modpacks/" />
       {% endif %}
-      <input type="submit" value="Login" />
-    </div>
+      <input type="submit" class="btn btn-primary" value="Login" />
+        </div>
     </form>
+    </div>
   </section>
 {% endblock %}

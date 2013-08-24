@@ -1,23 +1,35 @@
 {% extends "base.html" %}
 {% load modpacks %}
-{% block title %}
-    TechnicAntani Modpacks
+{% block menulinks %}
+    <li class="active"><a href="/modpacks/">Home</a></li>
+    <li><a href="/modpacks/settings/">Settings</a></li>
+    <li><a href="/mods/">Mods</a></li>
+    <li><a href="/mods/upload/">Add Mod</a></li>
+    <li><a href="/mods/repair/">Repair</a></li>
 {% endblock %}
 {% block body %}
-    <section id="content">
+    <a class="btn btn-default" href="/modpacks/create/">Create modpack</a>
 {% if modpacks %}
-    <ul class="modpacks">
     {% for modpack in modpacks %}
-        <li>
-        <img src="{{ modpack.getLogoUrl }}" />
-            <h3><a href="/modpacks/{{ modpack.id }}/">{{ modpack.name }}</a></h3>
-            {% modpack_versions modpack %}
-        </li>
+        <div class="media">
+        <a class="pull-left" href="/modpacks/{{ modpack.id }}/">
+            <img class="media-object" src="{{ modpack.getLogoUrl }}">
+        </a>
+            <div class="media-body">
+                <h3 class="media-heading">
+                    <a href="/modpacks/{{ modpack.id }}/">{{ modpack.name }}</a>
+                </h3>
+                <div>
+                {% modpack_versions modpack %}
+                </div>
+            </div>
+        </div>
+        <hr>
     {% endfor %}
-    </ul>
 {% else %}
-        <h3 class="modpacks">No modpacks found. Create one</h3>
+    <div class="alert alert-warning">
+        <h2>No modpacks found in the database.</h2>
+    </div>
 {% endif %}
-    <a href="/modpacks/create/">Create modpack</a>
-    </section>
+
 {% endblock %}

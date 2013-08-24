@@ -7,70 +7,34 @@ This is the index page. Its design is extended by all public pages
     {% block head %}
     <title>Technic Antani Home</title>
     {% endblock %}
-    <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,500' rel='stylesheet' type='text/css'>
-    <style type="text/css">
-        html {
-            height: 90%;
-        }
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: "Roboto",sans-serif;
-            font-weight: 300;
-            height: 100%;
-        }
-        .content{
-            width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-            padding-top: 50px;
-            border-right: 2px solid #464545;
-            border-left: 2px solid #464545;
-            padding-left: 15px;
-            padding-right: 15px;
-            height: 100%;
-            background-color: #eeeeee;
-        }
-        .content form{
-            border-top: 2px solid #464545;
-            border-bottom: 2px solid #464545;
-            padding-left: 15px;
-            padding-right: 15px;
-            background-color: #bbbbbb;
-            padding-bottom: 15px;
-        }
-        section.content {
-            width: 930px;
-            padding-left: 0;
-            padding-right: 0;
-        }
-        section.content div{
-            width: 300px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        section.content div input[type="password"],input[type="text"]{
-            width: 180px;
-        }
-    </style>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 </head>
 <body>
     {% block body %}
-        <div class="content">
-            <h2>You are on TechnicAntani's Public Index. You can now <a href="/modpacks/">Enter site</a>. </h2>
-            <p>
-            This is still in development but it's in a usable state. If you find errors please report them to the
-            <a href="https://github.com/AntaniCraft/TechnicAntani/issues">official bug tracker</a>. You can also find the
-            wiki on github. Feel free to contribute.
-            </p>
-            <h3>License</h3>
-            <p>
-            All python code is under GPL3. You can distribute and modify html files as you wish. Consider them MIT licensed.
-            </p>
-            <h3>Editing</h3>
-            <p>
-            You can edit this page by editing templates/index.html in the TechnicAntani directory.
-            </p>
+        <div class="container">
+            <div class="page-header">
+                <h1>You are on TechnicAntani's Public Index. You can now <a title="Main Page" href="/modpacks/">Enter site</a>. </h1>
+            </div>
+            <div class="jumbotron">
+                <div class="content">
+                <p>
+                The project is still in development but it's in a usable state. If you find errors please report them to the
+                <a title="Bug Tracker" href="https://github.com/AntaniCraft/TechnicAntani/issues">official bug tracker</a>. You can also find the
+                <a title="Wiki" href="https://github.com/AntaniCraft/TechnicAntani/wiki">wiki</a> on github. Feel free to contribute.
+                </p>
+                <h2>License</h2>
+                <p>
+                All python code is under GPL3. You can distribute and modify html files as you wish. Consider them MIT licensed.
+                </p>
+                <h2>Editing</h2>
+                <p>
+                You can edit this page by editing templates/index.html in the TechnicAntani directory. You could take a look <a href="https://github.com/AntaniCraft/TechnicAntani/wiki/Templates">here</a> for more info on
+                    templates.
+                </p>
+                </div>
+            </div>
         </div>
     {% endblock %}
 </body>
