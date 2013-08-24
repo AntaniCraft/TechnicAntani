@@ -22,23 +22,23 @@ from manager.models import Build, Modpack
 class AddModForm(forms.Form):
     modtype = forms.ChoiceField(choices=(
         #(1, "Config Pack - BROKEN"),
-        (2, "Core Mod"),
         (3, "Normal"),
+        (2, "Core Mod"),
         (4, "Pre Packaged")
-    ), label="Upload Type")
+    ), label="Upload Type", widget=forms.Select(attrs={"class": "form-control"}))
     zipfile = forms.FileField()
 
 
 class ConfirmDataForm(forms.Form):
     filepath = forms.CharField(widget=forms.HiddenInput)  # I know, i know.
     type = forms.IntegerField(widget=forms.HiddenInput)
-    slug = forms.CharField(max_length=20, label="Identifier")
-    name = forms.CharField(max_length=255, label="Pretty Name")
-    desc = forms.CharField(widget=forms.Textarea, max_length="255", label="Decription")
-    mcversion = forms.CharField(max_length=50, label="Minecraft Version")
-    version = forms.CharField(max_length=50, label="Version")
-    author = forms.CharField(max_length=255, label="Author(s)")
-    url = forms.URLField(max_length=255,label="Mod Home Page")
+    slug = forms.CharField(max_length=20, label="Identifier", widget=forms.TextInput(attrs={"class": "form-control"}))
+    name = forms.CharField(max_length=255, label="Pretty Name", widget=forms.TextInput(attrs={"class": "form-control"}))
+    desc = forms.CharField(widget=forms.Textarea(attrs={"class": "form-control"}), max_length="255", label="Decription")
+    mcversion = forms.CharField(max_length=50, label="Minecraft Version", widget=forms.TextInput(attrs={"class": "form-control"}))
+    version = forms.CharField(max_length=50, label="Version", widget=forms.TextInput(attrs={"class": "form-control"}))
+    author = forms.CharField(max_length=255, label="Author(s)", widget=forms.TextInput(attrs={"class": "form-control"}))
+    url = forms.URLField(max_length=255,label="Mod Home Page", widget=forms.TextInput(attrs={"class": "form-control"}))
 
 
 class CreateBuildForm(forms.ModelForm):
