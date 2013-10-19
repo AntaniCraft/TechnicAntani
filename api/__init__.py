@@ -22,12 +22,12 @@ urls = patterns('',
     url(r'^$', index),
 
     url(r'^modpack/$', modpack_list),
-    url(r'^modpack/(.+?)/(.+?)$', modpack_build),
-    url(r'^modpack/(.+?)$', modpack),
+    url(r'^modpack/(.+?)/(.+?)/?$', modpack_build),
+    url(r'^modpack/(.+?)/?$', modpack),
 
     url(r'^verify/$', verify),
-    url(r'^verify/(.+?)$', verify),
+    url(r'^verify/(.+?)/?$', verify),
 
     url(r'^mod/$', mod),
-    url(r'^mod/(.+?)$', mod)
+    url(r'^mod/(.+?)/?$', mod)
 )
