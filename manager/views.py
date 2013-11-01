@@ -85,6 +85,7 @@ def modpacks_create(request):
                 destination.close()
             m.icon_md5 = checksum_file(resdir+"icon.png")
             m.save()
+            return HttpResponseRedirect("/modpacks/"+str(m.id))
     else:
         createM = CreateModpackForm()
     context = {
