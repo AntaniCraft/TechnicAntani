@@ -421,6 +421,7 @@ def modpack_settings(request):
 def modpack_settings_mcvers(request):
     resp = urllib2.urlopen("http://www.technicpack.net/api/minecraft")
     obj = json.loads(resp.read())
+    McVersion.objects.all().delete()
     for k, v in obj.iteritems():
         t = McVersion()
         t.version = k
