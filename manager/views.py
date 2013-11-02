@@ -422,7 +422,7 @@ def modpack_settings_mcvers(request):
     resp = urllib2.urlopen("http://www.technicpack.net/api/minecraft")
     obj = json.loads(resp.read())
     for k, v in obj.iteritems():
-        if not McVersion.objects.filter(version=k) == []:
+        if not len(McVersion.objects.filter(version=k)) == 0:
             t = McVersion()
             t.version = k
             t.checksum = v["md5"]
