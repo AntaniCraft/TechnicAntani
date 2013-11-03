@@ -2,6 +2,8 @@
 {% block body %}
 {% load modpacks %}
     <h2>{{ modpack.name }} - {{ build.version }} for Minecraft {{ mcver }}</h2>
+    <a href="/builds/{{ build.id }}/recommended">Set as recommended</a>
+    <a href="/builds/{{ build.id }}/latest">Set as latest</a>
     <h3>Installed Mods</h3>
     <ul class="modpacks">
     {% if mods_installed %}
