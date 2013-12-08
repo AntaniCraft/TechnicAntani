@@ -60,7 +60,8 @@ class CreateModpackForm(forms.ModelForm):
 
 
 class AntaniSettings(forms.Form):
-    apikey = forms.CharField(max_length=128, label="API key", help_text="Technic Platform API key")
+    apikey = forms.CharField(label="API keys", help_text="Technic Platform API keys, separated by commas",
+                             widget=forms.Textarea())
     repopath = forms.CharField(max_length=255, label="Path to mod repo",
                                help_text="This should be readable/writable from TechnicAntani, so ensure it's running"
                                          " with adequate rights")

@@ -17,17 +17,18 @@
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponseNotFound
-from django.shortcuts import render_to_response, render
+from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core import exceptions
 
-import tempfile, re
+import tempfile
+import re
 import os.path
 from os import mkdir
 import urllib2
 import json
 
-from manager.models import Modpack, Build, FileCache, ModCache, McVersion, AntaniSetting
+from manager.models import Modpack, Build, FileCache, ModCache, McVersion, AntaniSetting, TechnicApiKey
 from manager.forms import AddModForm, ConfirmDataForm, CreateBuildForm, CreateModpackForm, AntaniSettings
 from manager.mod_manager import ModManager, RawMod, checksum_file
 
@@ -381,12 +382,10 @@ def modpack_build_clone(request, buildid):
 
 @login_required(login_url="/login")
 def modpack_settings(request):
-    try:
-        fapikey = AntaniSetting.objects.get(key="apikey")
-    except exceptions.ObjectDoesNotExist:
-        fapikey = AntaniSetting()
-        fapikey.key = "apikey"
-        fapikey.value = ""
+    fapikeys = []
+    for fapikey in TechnicApiKey.objects.all():
+        fapikeys.append(fapikey.key)
+    strapikeys = ",".join(fapikeys)
     try:
         frepourl = AntaniSetting.objects.get(key="repourl")
     except exceptions.ObjectDoesNotExist:
@@ -402,8 +401,13 @@ def modpack_settings(request):
     if request.method == 'POST':
         form = AntaniSettings(request.POST)
         if form.is_valid():
-            fapikey.value = form.cleaned_data["apikey"]
-            fapikey.save()
+            strapikeys = form.cleaned_data["apikey"]
+            for ak in TechnicApiKey.objects.all():
+                ak.delete()
+            for fapikey in strapikeys.split(","):
+                x = TechnicApiKey()
+                x.key = fapikey
+                x.save()
             frepopath.value = form.cleaned_data["repopath"]
             frepopath.save()
             frepourl.value = form.cleaned_data["repourl"]
@@ -411,7 +415,7 @@ def modpack_settings(request):
 
     else:
         form = AntaniSettings(initial={
-            'apikey': fapikey.value,
+            'apikey': strapikeys,
             'repourl': frepourl.value,
             'repopath': frepopath.value,
         })

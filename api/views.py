@@ -82,10 +82,13 @@ def modpack_build(request, slug, build):
 
 def verify(request, apikey = None):
     result = {}
-    localkey = AntaniSetting.objects.get(key="apikey").value
+    found = False
+    for localkey in TechnicApiKey.objects.all():
+        if localkey.key == apikey:
+            found = True
     if apikey is None:
         result["error"] = "No API key provided."
-    elif apikey==localkey:
+    elif found:
         result["valid"] = "Key validated."
     else:
         result["error"] = "Invalid key provided."

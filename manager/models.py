@@ -93,7 +93,6 @@ class FileCache(models.Model):
 class AntaniSetting(models.Model):
     """
     Known fields
-        apikey - technic platform api key
         repopath - absolute path to mod repository
         repourl - root url at which repo is served
     """
@@ -102,3 +101,13 @@ class AntaniSetting(models.Model):
 
     def __unicode__(self):
         return self.key+": "+self.value
+
+
+class TechnicApiKey(models.Model):
+    """
+    Storage for known api keys
+    """
+    key = models.CharField(max_length=128)
+
+    def __unicode__(self):
+        return self.key

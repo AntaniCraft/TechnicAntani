@@ -10,8 +10,8 @@
     <form action="/modpacks/settings/" method="POST">
         {% csrf_token %}
         <div class="form-group">
-            <label for="id_api">API Key:</label>
-            <input type="text" maxlength="{{ form.apikey.max_length }}" class="form-control" id="id_api" name="{{ form.apikey.name }}" placeholder="API Key" value="{{ form.apikey.value }}" />
+            <label for="id_api">API Keys:</label>
+            <textarea type="text" maxlength="{{ form.apikey.max_length }}" class="form-control" id="id_api" name="{{ form.apikey.name }}" placeholder="API Keys separated by commas" >{{ form.apikey.value }}</textarea>
             <p class="help-block">{{ form.apikey.help_text }}</p>
         </div>
         <div class="form-group">
