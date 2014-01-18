@@ -1,6 +1,8 @@
-db
+db.sqlite3
 debug_toolbar
 *.iml
 .idea
 **/*.pyc
 **/*.pyo
+TechnicAntani/settings.py
+TechnicAntani/antanisettings.py

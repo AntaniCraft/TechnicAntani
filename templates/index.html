@@ -1,41 +1,35 @@
-{% comment %}
-This is the index page. Its design is extended by all public pages
-{% endcomment %}
-<!DOCTYPE html>
-<html>
-<head>
-    {% block head %}
-    <title>Technic Antani Home</title>
-    {% endblock %}
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-</head>
-<body>
-    {% block body %}
-        <div class="container">
-            <div class="page-header">
-                <h1>You are on TechnicAntani's Public Index. You can now <a title="Main Page" href="/modpacks/">Enter site</a>. </h1>
-            </div>
-            <div class="jumbotron">
-                <div class="content">
-                <p>
-                The project is still in development but it's in a usable state. If you find errors please report them to the
-                <a title="Bug Tracker" href="https://github.com/AntaniCraft/TechnicAntani/issues">official bug tracker</a>. You can also find the
-                <a title="Wiki" href="https://github.com/AntaniCraft/TechnicAntani/wiki">wiki</a> on github. Feel free to contribute.
-                </p>
-                <h2>License</h2>
-                <p>
-                All python code is under GPL3. You can distribute and modify html files as you wish. Consider them MIT licensed.
-                </p>
-                <h2>Editing</h2>
-                <p>
-                You can edit this page by editing templates/index.html in the TechnicAntani directory. You could take a look <a href="https://github.com/AntaniCraft/TechnicAntani/wiki/Templates">here</a> for more info on
-                    templates.
-                </p>
+{% extends "base.html" %}
+{% load modpacks %}
+{% block menulinks %}
+    <li class="active"><a href="/modpacks/">Home</a></li>
+    <li><a href="/modpacks/settings/">Settings</a></li>
+    <li><a href="/mods/">Mods</a></li>
+    <li><a href="/mods/upload/">Add Mod</a></li>
+    <li><a href="/mods/repair/">Repair</a></li>
+{% endblock %}
+{% block body %}
+    <a class="btn btn-default" href="/modpacks/create/">Create modpack</a>
+{% if modpacks %}
+    {% for modpack in modpacks %}
+        <div class="media">
+        <a class="pull-left" href="/modpacks/{{ modpack.id }}/">
+            <img class="media-object" src="{{ modpack.getLogoUrl }}">
+        </a>
+            <div class="media-body">
+                <h3 class="media-heading">
+                    <a href="/modpacks/{{ modpack.id }}/">{{ modpack.name }}</a>
+                </h3>
+                <div style="padding: 3px;">
+                {% modpack_versions modpack %}
                 </div>
             </div>
         </div>
-    {% endblock %}
-</body>
-</html>
+        <hr>
+    {% endfor %}
+{% else %}
+    <div style="margin-top: 20px" class="alert alert-warning">
+        <h2>No modpacks found in the database.</h2>
+    </div>
+{% endif %}
+
+{% endblock %}
