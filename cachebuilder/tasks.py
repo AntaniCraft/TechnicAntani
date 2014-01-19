@@ -15,33 +15,27 @@
 #                                                                           #
 #############################################################################
 
-import os
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+from celery import shared_task
+from time import sleep
 
-# Settings for antani setup
 
-#
-# Packrepo settings
-# The packrepo is where each single repo lives
+@shared_task
+def rebuild_all_caches():
+    """
+    WIPES and recreates all caches. Takes forever if there are many things to build
+    """
+    return True
 
-# Modpack repos path. This is the path where each repo will be cloned. Must be writable
-MODPACKPATH = os.path.join(BASE_DIR, "var", "packrepo")
+@shared_task
+def update_modpack(repo):
+    """
+    Updates the repo (the param is the dir|slug). It's just a git pull reporting True if there are updates
+    """
+    return True
 
-#
-# Modrepo settings
-#
-
-# The path the mod repo will be cloned to. Must be writable
-MODREPO_DIR = os.path.join(BASE_DIR, "var", "modrepo")
-
-# If domain is not the same change it in this setting. If unsure, ignore
-# Eg. TechnicAntani running from example.com, but mods served from mods.example.com
-SERVE_DOMAIN = ""
-
-# The webpath of the server. If unsure, ignore
-SERVE_URL = "/mods"
-
-#
-# Os settings
-#
-GIT_EXEC = "git"
+@shared_task
+def update_mods():
+    """
+    Updates the mod repo. Returns True if there are updates (pull not empty)
+    """
+    return True
