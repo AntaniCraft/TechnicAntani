@@ -28,10 +28,10 @@ from TechnicAntani.settings import MODREPO_DIR
 
 
 class Mod:
-    def __init__(self, dir, files):
-        self.slug = dir.split(path.sep)[-1]
+    def __init__(self, dirname, files):
+        self.slug = dirname.split(path.sep)[-1]
         c = ConfigParser()
-        c.read(dir+path.sep+"Metadata")
+        c.read(dirname+path.sep+"Metadata")
         self.name = c.get("Mod", "Name")
         self.description = c.get("Mod", "Description")
         self.author = c.get("Mod", "Author")
@@ -63,14 +63,14 @@ class ModManager:
                 self.mods.append(Mod(root, files))
 
     def add_mod(self, slug, name, description, author, url, mcver, ver, tmpfile):
-        slugdir = self.fspath.value + path.sep + "mods"
+        slugdir = self.fspath + path.sep + "mods"
         if not path.exists(slugdir):
             mkdir(slugdir)
         slugdir += path.sep + slug
         if not path.exists(slugdir):
             mkdir(slugdir)
         move(tmpfile,
-             self.fspath + path.sep + "mods" + path.sep + slug + path.sep + slug + "-" + mcver + "-" + ver + ".zip"
+             self.fspath + path.sep + 'mods' + path.sep + slug + path.sep + slug + "-" + mcver + "-" + ver + ".zip"
              )
         c = ConfigParser()
         c.add_section("Mod")
@@ -84,9 +84,9 @@ class ModManager:
 
 class RawMod:
 
-    def __init__(self, rawpath, type=ModType.NORMAL):
+    def __init__(self, rawpath, modtype=ModType.NORMAL):
         self.jarpath = rawpath
-        self.type = type
+        self.type = modtype
         self.modid = ""
         self.name = ""
         self.desc = ""
@@ -95,7 +95,7 @@ class RawMod:
         self.url = ""
         self.mcversion = ""
 
-    def readMetadata(self):
+    def read_metadata(self):
         z = zipfile.ZipFile(self.jarpath)
         str = ""
         try:
@@ -153,8 +153,9 @@ class RawMod:
         zpack.close()
         return tmpfile
 
-def checksum_file(path):
-    afile = open(path, "rb")
+
+def checksum_file(dirpath):
+    afile = open(dirpath, "rb")
     hasher = hashlib.md5()
     buf = afile.read(65536)
     while len(buf) > 0:
