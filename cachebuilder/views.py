@@ -22,7 +22,10 @@ import cachebuilder.tasks as mytasks
 
 @login_required
 def index(request):
-    return render(request, template_name="cachebuilder/index.html")
+    context = {
+        'username': request.user.username
+    }
+    return render(request, "cachebuilder/index.html", context)
 
 
 @login_required

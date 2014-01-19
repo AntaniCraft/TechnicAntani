@@ -40,6 +40,7 @@ This is the base page. Its design is extended by all private templates in Techni
             <li><a href="{% url 'cachebuilder.views.index' %}" {% if 'cachebuilderindex' in view.menu %}class="active"{% endif %}>Cache</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
+            <li><b class="navbar-text">{{ username }}</b></li>
             <li><a href="/logout" >Logout</a></li>
           </ul>
         </div><!--/.nav-collapse -->
