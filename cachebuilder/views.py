@@ -15,28 +15,20 @@
 #                                                                           #
 #############################################################################
 
-from django.conf.urls import patterns, include, url
-from TechnicAntani import settings
+from django.shortcuts import render,redirect
+from django.contrib.auth.decorators import login_required
+import cachebuilder.tasks as mytasks
 
-import cachebuilder.views as cachebuilder
-from api import urls as api_urls
 
-urlpatterns = patterns('',
-                       # Auth stuffs
-                       url(r'^login/$', 'django.contrib.auth.views.login', name='login'),
-                       url(r'^logout/$', 'django.contrib.auth.views.logout', name='logout'),
+@login_required
+def index(request):
+    context = {
+        'username': request.user.username
+    }
+    return render(request, "cachebuilder/index.html", context)
 
-                       # TechnicSolder API
-                       url(r'^api/', include(api_urls)),
 
-                       # Home - temporarily use cache builder
-                       url(r'^$', cachebuilder.index),
-
-                       # Cache builder
-                       url(r'^cache/$', cachebuilder.index),
-                       url(r'^cache/rebuildall$', cachebuilder.rebuild_all_caches),
-                       )
-
-if settings.DEBUG:
-    from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-    urlpatterns += staticfiles_urlpatterns()
+@login_required
+def rebuild_all_caches(request):
+    mytasks.rebuild_all_caches.delay()
+    return redirect(index)

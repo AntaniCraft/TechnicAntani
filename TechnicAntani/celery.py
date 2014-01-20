@@ -15,28 +15,13 @@
 #                                                                           #
 #############################################################################
 
-from django.conf.urls import patterns, include, url
-from TechnicAntani import settings
+import os
+from celery import Celery
+from django.conf import settings
 
-import cachebuilder.views as cachebuilder
-from api import urls as api_urls
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'TechnicAntani.settings')
 
-urlpatterns = patterns('',
-                       # Auth stuffs
-                       url(r'^login/$', 'django.contrib.auth.views.login', name='login'),
-                       url(r'^logout/$', 'django.contrib.auth.views.logout', name='logout'),
+app = Celery('TechnicAntani')
 
-                       # TechnicSolder API
-                       url(r'^api/', include(api_urls)),
-
-                       # Home - temporarily use cache builder
-                       url(r'^$', cachebuilder.index),
-
-                       # Cache builder
-                       url(r'^cache/$', cachebuilder.index),
-                       url(r'^cache/rebuildall$', cachebuilder.rebuild_all_caches),
-                       )
-
-if settings.DEBUG:
-    from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-    urlpatterns += staticfiles_urlpatterns()
+app.config_from_object('django.conf:settings')
+app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)

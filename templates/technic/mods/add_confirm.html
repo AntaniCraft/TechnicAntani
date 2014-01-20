@@ -1,8 +1,0 @@
-{% extends "base.html" %}
-{% block body %}
-    <form action="/mods/submit/" method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-    <input class="btn btn-default" type="submit" value="Submit">
-    </form>
-{% endblock %}

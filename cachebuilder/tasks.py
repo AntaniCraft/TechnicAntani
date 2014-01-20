@@ -15,28 +15,27 @@
 #                                                                           #
 #############################################################################
 
-from django.conf.urls import patterns, include, url
-from TechnicAntani import settings
+from celery import shared_task
+from time import sleep
 
-import cachebuilder.views as cachebuilder
-from api import urls as api_urls
 
-urlpatterns = patterns('',
-                       # Auth stuffs
-                       url(r'^login/$', 'django.contrib.auth.views.login', name='login'),
-                       url(r'^logout/$', 'django.contrib.auth.views.logout', name='logout'),
+@shared_task
+def rebuild_all_caches():
+    """
+    WIPES and recreates all caches. Takes forever if there are many things to build
+    """
+    return True
 
-                       # TechnicSolder API
-                       url(r'^api/', include(api_urls)),
+@shared_task
+def update_modpack(repo):
+    """
+    Updates the repo (the param is the dir|slug). It's just a git pull reporting True if there are updates
+    """
+    return True
 
-                       # Home - temporarily use cache builder
-                       url(r'^$', cachebuilder.index),
-
-                       # Cache builder
-                       url(r'^cache/$', cachebuilder.index),
-                       url(r'^cache/rebuildall$', cachebuilder.rebuild_all_caches),
-                       )
-
-if settings.DEBUG:
-    from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-    urlpatterns += staticfiles_urlpatterns()
+@shared_task
+def update_mods():
+    """
+    Updates the mod repo. Returns True if there are updates (pull not empty)
+    """
+    return True

@@ -16,15 +16,15 @@
 #############################################################################
 
 from django.http import HttpResponse
-from manager.models import *
-
+from api.models import *
+from TechnicAntani.antanisettings import *
 
 import json
 import re
 
 
-def fucking_php_escape(str):
-    strout = re.sub("([/])", r'\\\1', str)
+def fucking_php_escape(string):
+    strout = re.sub("([/])", r'\\\1', string)
     return strout
 
 
@@ -33,17 +33,19 @@ def index(request):
 
 
 def modpack_list(request):
-    result = {}
-    result['modpacks'] ={}
-    for modpack in Modpack.objects.all():
-        result['modpacks'][modpack.slug] = modpack.name
-    result['mirror_url'] = fucking_php_escape(AntaniSetting.objects.get(key="repourl").value)
-    return HttpResponse(json.dumps(result).replace("\\\\","\\"))
+    result = {
+        'modpacks': {}
+    }
+    mirror_url = SERVE_DOMAIN + SERVE_URL if (SERVE_DOMAIN != "") else "http://" + request.get_host() + SERVE_URL
+    for modpacko in ModpackCache.objects.all():
+        result['modpacks'][modpacko.slug] = modpacko.name
+    result['mirror_url'] = fucking_php_escape(mirror_url)
+    return HttpResponse(json.dumps(result).replace("\\\\", "\\"))
 
 
 def modpack(request, slug):
     result = {}
-    m = Modpack.objects.get(slug=slug)
+    m = ModpackCache.objects.get(slug=slug)
     result["name"] = m.slug
     result["display_name"] = m.name
     result["url"] = m.url
@@ -51,7 +53,7 @@ def modpack(request, slug):
     result["icon_md5"] = m.icon_md5
     result["background_md5"] = m.background_md5
     result["builds"] = []
-    for b in Build.objects.all().filter(modpack=m):
+    for b in VersionsCache.objects.all().filter(modpack=m):
         result["builds"].append(b.version)
         if b.recommended:
             result["recommended"] = b.version
@@ -63,27 +65,27 @@ def modpack(request, slug):
 
 def modpack_build(request, slug, build):
     result = {}
-    m = Modpack.objects.get(slug=slug)
-    b = Build.objects.all().filter(modpack=m).filter(version=build)[0]
-    result["minecraft"] = b.mcversion.version
-    result["minecraft_md5"] = b.mcversion.checksum
+    m = ModpackCache.objects.get(slug=slug)
+    b = VersionsCache.objects.all().filter(modpack=m).filter(version=build)[0]
+    result["minecraft"] = b.mcversion
+    result["minecraft_md5"] = b.mcversion_checksum
     result["forge"] = None
     result["mods"] = []
-    for mod in b.mods.all():
+    for modo in b.mods.all():
         m = {
-            "name": mod.modInfo.name,
+            "name": modo.modInfo.name,
             "version": mod.version,
             "md5": mod.checksum,
-            "url": fucking_php_escape(mod.getUrl()),
+            "url": fucking_php_escape(mod.getUrl(request)),
         }
         result["mods"].append(m)
-    return HttpResponse(json.dumps(result).replace("\\\\","\\"))
+    return HttpResponse(json.dumps(result).replace("\\\\", "\\"))
 
 
-def verify(request, apikey = None):
+def verify(request, apikey=None):
     result = {}
     found = False
-    for localkey in TechnicApiKey.objects.all():
+    for localkey in ApiKey.objects.all():
         if localkey.key == apikey:
             found = True
     if apikey is None:
@@ -94,14 +96,15 @@ def verify(request, apikey = None):
         result["error"] = "Invalid key provided."
     return HttpResponse(json.dumps(result))
 
-def mod(request, modSlug=None):
-    if modSlug is None:
+
+def mod(request, modslug=None):
+    if modslug is None:
         result = {
             'error': 'No mod selected.'
         }
         return HttpResponse(json.dumps(result))
-    m = ModCache.objects.get(name=modSlug)
-    fcs = FileCache.objects.filter(modInfo=m)
+    m = ModInfoCache.objects.get(name=modslug)
+    fcs = ModCache.objects.filter(modInfo=m)
     result = {
         'name': m.name,
         'pretty_name': m.pretty_name,
