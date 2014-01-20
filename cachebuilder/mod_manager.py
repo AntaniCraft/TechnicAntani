@@ -96,6 +96,7 @@ class RawMod:
         self.mcversion = ""
 
     def read_metadata(self):
+        # TODO Rewrite this shit
         z = zipfile.ZipFile(self.jarpath)
         str = ""
         try:
