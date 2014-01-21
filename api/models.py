@@ -31,7 +31,6 @@ class ModpackCache(models.Model):
     logo_md5 = models.CharField(max_length=32)
     icon_md5 = models.CharField(max_length=32)
     background_md5 = models.CharField(max_length=32)
-    pass
 
 
 class ModInfoCache(models.Model):
