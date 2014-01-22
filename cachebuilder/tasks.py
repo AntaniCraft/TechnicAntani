@@ -59,33 +59,34 @@ def rebuild_all_caches():
                 cachedver.mcversion_checksum = _get_mc_md5(p.versions[packver]['mcversion'])
                 cachedver.modpack = pc
                 cachedver.save()
-            # TODO package forge? use modpack.jar for now. Let's see later
 
-            # Package the zippone with current config in git
-            configzip = path.join(MODBUILD_DIR, pc.name+"_config.zip")
-            with zipfile.ZipFile(configzip, "w", zipfile.ZIP_DEFLATED) as zipp1:
-                root = path.join(MODPACKPATH, pack, "config")
-                rootlen = len(root)
-                for base, dirs, files in os.walk(root):
-                    for ifile in files:
-                        fn = path.join(base, ifile)
-                        zipp1.write(fn, path.join("config", fn[rootlen:]))
-            confname = pack + "Config"
-            confcache = ModInfoCache.objects.get(name=confname)
-            if confcache is None:
-                confcache = ModInfoCache()
-                # Shameless Self Advert
-                confcache.author = "TechnicAntani"
-                confcache.description = "Configuration generated from git sources."
-                confcache.link = "http://github.com/AntaniCraft/TechnicAntani"
-                confcache.pretty_name = pack + "'s Configuration"
-                confcache.save()
-            confvcache = ModCache()
-            confvcache.localpath = configzip
-            confvcache.md5 = checksum_file(configzip)
-            confvcache.modInfo = confcache
-            confvcache.version = packver
-            confvcache.save()
+                # TODO package forge? use modpack.jar for now. Let's see later
+
+                # Package the zippone with current config in git
+                configzip = path.join(MODBUILD_DIR, pc.name+"_config.zip")
+                with zipfile.ZipFile(configzip, "w", zipfile.ZIP_DEFLATED) as zipp1:
+                    root = path.join(MODPACKPATH, pack, "config")
+                    rootlen = len(root)
+                    for base, dirs, files in os.walk(root):
+                        for ifile in files:
+                            fn = path.join(base, ifile)
+                            zipp1.write(fn, path.join("config", fn[rootlen:]))
+                confname = pack + "Config"
+                confcache = ModInfoCache.objects.get(name=confname)
+                if confcache is None:
+                    confcache = ModInfoCache()
+                    # Shameless Self Advert
+                    confcache.author = "TechnicAntani"
+                    confcache.description = "Configuration generated from git sources."
+                    confcache.link = "http://github.com/AntaniCraft/TechnicAntani"
+                    confcache.pretty_name = pack + "'s Configuration"
+                    confcache.save()
+                confvcache = ModCache()
+                confvcache.localpath = configzip
+                confvcache.md5 = checksum_file(configzip)
+                confvcache.modInfo = confcache
+                confvcache.version = packver
+                confvcache.save()
 
 
             for mod in p.versions[packver]['mods'].keys():
