@@ -66,7 +66,7 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('api', ['ModCache'])
 
-        # Adding model 'VersionsCache'
+        # Adding model 'VersionCache'
         db.create_table('api_versionscache', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('version', self.gf('django.db.models.fields.CharField')(max_length=32)),
@@ -77,9 +77,9 @@ class Migration(SchemaMigration):
             ('forgever', self.gf('django.db.models.fields.CharField')(max_length=64)),
             ('modpack', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['api.ModpackCache'])),
         ))
-        db.send_create_signal('api', ['VersionsCache'])
+        db.send_create_signal('api', ['VersionCache'])
 
-        # Adding M2M table for field mods on 'VersionsCache'
+        # Adding M2M table for field mods on 'VersionCache'
         m2m_table_name = db.shorten_name('api_versionscache_mods')
         db.create_table(m2m_table_name, (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
@@ -102,10 +102,10 @@ class Migration(SchemaMigration):
         # Deleting model 'ModCache'
         db.delete_table('api_modcache')
 
-        # Deleting model 'VersionsCache'
+        # Deleting model 'VersionCache'
         db.delete_table('api_versionscache')
 
-        # Removing M2M table for field mods on 'VersionsCache'
+        # Removing M2M table for field mods on 'VersionCache'
         db.delete_table(db.shorten_name('api_versionscache_mods'))
 
 
@@ -144,7 +144,7 @@ class Migration(SchemaMigration):
             'url': ('django.db.models.fields.URLField', [], {'max_length': '200'})
         },
         'api.versionscache': {
-            'Meta': {'object_name': 'VersionsCache'},
+            'Meta': {'object_name': 'VersionCache'},
             'forgever': ('django.db.models.fields.CharField', [], {'max_length': '64'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'latest': ('django.db.models.fields.BooleanField', [], {}),

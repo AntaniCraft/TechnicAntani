@@ -53,7 +53,7 @@ def modpack(request, slug):
     result["icon_md5"] = m.icon_md5
     result["background_md5"] = m.background_md5
     result["builds"] = []
-    for b in VersionsCache.objects.all().filter(modpack=m):
+    for b in VersionCache.objects.all().filter(modpack=m):
         result["builds"].append(b.version)
         if b.recommended:
             result["recommended"] = b.version
@@ -66,7 +66,7 @@ def modpack(request, slug):
 def modpack_build(request, slug, build):
     result = {}
     m = ModpackCache.objects.get(slug=slug)
-    b = VersionsCache.objects.all().filter(modpack=m).filter(version=build)[0]
+    b = VersionCache.objects.all().filter(modpack=m).filter(version=build)[0]
     result["minecraft"] = b.mcversion
     result["minecraft_md5"] = b.mcversion_checksum
     result["forge"] = None

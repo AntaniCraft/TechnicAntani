@@ -16,14 +16,101 @@
 #############################################################################
 
 from celery import shared_task
-from time import sleep
-
+from kombu import compression
+from cachebuilder.mod_manager import *
+from cachebuilder.pack_manager import *
+from api.models import *
+import zipfile
 
 @shared_task
 def rebuild_all_caches():
     """
-    WIPES and recreates all caches. Takes forever if there are many things to build
+    Updates all caches. Takes forever if there are many things to build
+    throws FileNotFoundError if a mod we don't track is requested
     """
+    # Diff mods first
+    mm = ModManager()  # GASP!
+    pm = ModpackManager()
+    for pack in pm.list_packs():
+        p = pm.get_pack(pack)
+        pc = ModpackCache.objects.get(slug=pack)
+        if pc is None:
+            pc = ModpackCache()
+            pc.slug = pack
+            pc.name = p.name
+            pc.description = p.description
+            pc.url = p.url
+        # Refresh md5 - just in case
+        pc.background_md5 = checksum_file(p.get_background())
+        pc.logo_md5 = checksum_file(p.get_logo())
+        pc.icon_md5 = checksum_file(p.get_icon())
+        pc.save()
+        # packvers=VersionCache.objects.filter(modpack=pc)
+        for packver in p.versions.keys():
+            cachedver = VersionCache.objects.get(modpack=pc,version=packver)
+            if cachedver is None:
+                cachedver = VersionCache()
+                cachedver.forgever = p.versions[packver]['forgever']
+
+
+                cachedver.latest = p.versions[packver]['latest']
+                cachedver.recommended = p.versions[packver]['recommended']
+                cachedver.mcversion = p.versions[packver]['mcversion']
+                cachedver.mcversion_checksum = _get_mc_md5(p.versions[packver]['mcversion'])
+                cachedver.modpack = pc
+                cachedver.save()
+            # TODO package forge? use modpack.jar for now. Let's see later
+
+            # Package the zippone with current config in git
+            configzip = path.join(MODBUILD_DIR, pc.name+"_config.zip")
+            with zipfile.ZipFile(configzip, "w", zipfile.ZIP_DEFLATED) as zipp1:
+                root = path.join(MODPACKPATH, pack, "config")
+                rootlen = len(root)
+                for base, dirs, files in os.walk(root):
+                    for ifile in files:
+                        fn = path.join(base, ifile)
+                        zipp1.write(fn, path.join("config", fn[rootlen:]))
+            confname = pack + "Config"
+            confcache = ModInfoCache.objects.get(name=confname)
+            if confcache is None:
+                confcache = ModInfoCache()
+                # Shameless Self Advert
+                confcache.author = "TechnicAntani"
+                confcache.description = "Configuration generated from git sources."
+                confcache.link = "http://github.com/AntaniCraft/TechnicAntani"
+                confcache.pretty_name = pack + "'s Configuration"
+                confcache.save()
+            confvcache = ModCache()
+            confvcache.localpath = configzip
+            confvcache.md5 = checksum_file(configzip)
+            confvcache.modInfo = confcache
+            confvcache.version = packver
+            confvcache.save()
+
+
+            for mod in p.versions[packver]['mods'].keys():
+                mc = ModInfoCache.objects.get(name=mod)
+                if mc is None:
+                    # Ok, we have work to do
+                    mr = mm.get_mod(mod)
+                    if mr is None:
+                        raise FileNotFoundError()
+                    mc = _build_cache(mr, p.versions[packver]['mods'][mod])
+
+
+
+    # for mod in mm.mods:
+    #     info_cache = ModInfoCache.objects.get(name=mod.slug)
+    #     if info_cache is None:
+    #         info_cache = ModInfoCache()
+    #         info_cache.author = mod.author
+    #         info_cache.description = mod.description
+    #         info_cache.link = mod.url
+    #         info_cache.pretty_name = mod.name
+    #         info_cache.save()
+    #     # TODO finish
+
+
     return True
 
 @shared_task
@@ -39,3 +126,19 @@ def update_mods():
     Updates the mod repo. Returns True if there are updates (pull not empty)
     """
     return True
+
+
+def _get_mc_md5(mcver):
+    return ""  # TODO get an answer on IRC -> WTF
+
+def _build_cache(mod,version):
+    info_cache = ModInfoCache.objects.get(name=mod.name)
+    if info_cache is None:
+        info_cache = ModInfoCache()
+        info_cache.author = mod.author
+        info_cache.description = mod.description
+        info_cache.link = mod.url
+        info_cache.pretty_name = mod.name
+        info_cache.save()
+    if mod.type == "mod":
+        pass

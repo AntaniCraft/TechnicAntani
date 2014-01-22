@@ -33,18 +33,16 @@ class Mod:
         self.description = c.get("Mod", "Description")
         self.author = c.get("Mod", "Author")
         self.url = c.get("Mod", "Url")
+        self.type = c.get("Mod", "Type")  # mod, prepackaged
         self.versions = {}
         versionf = open(path.join(dirname,"versions.json"))
         obj = json.load(versionf)
         versionf.close()
-        for mcver in obj.keys():
-            self.versions[mcver] = []
-            for version in obj[mcver].keys():
-                modver = {
-                    'version': version,
-                    'file': obj[mcver][version]
-                }
-                self.versions[mcver].append(modver)
+        for version in obj.keys():
+            self.versions[version] = {
+                'file': obj[version]['file'],
+                'mcvers': obj[version]['mc']
+            }
 
 
 class ModManager:
@@ -54,6 +52,12 @@ class ModManager:
         for root, dirs, files in walk(self.fspath):
             if "Metadata" in files:
                 self.mods.append(Mod(root))
+
+    def get_mod(self, slug):
+        for mod in self.mods:
+            if mod.slug == slug:
+                return mod
+        return None
 
 
 def checksum_file(dirpath):

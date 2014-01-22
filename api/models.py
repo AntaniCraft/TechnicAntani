@@ -27,7 +27,8 @@ class ApiKey(models.Model):
 class ModpackCache(models.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255)
-    url = models.URLField()
+    url = models.CharField(max_length=255)
+    description = models.TextField()
     logo_md5 = models.CharField(max_length=32)
     icon_md5 = models.CharField(max_length=32)
     background_md5 = models.CharField(max_length=32)
@@ -49,10 +50,10 @@ class ModCache(models.Model):
 
     def get_url(self, req):
         mirror_url = SERVE_DOMAIN + SERVE_URL if (SERVE_DOMAIN != "") else "http://" + req.get_host() + SERVE_URL
-        return mirror_url + "/" + self.localpath
+        return mirror_url + "/mods/" + self.localpath
 
 
-class VersionsCache(models.Model):
+class VersionCache(models.Model):
     version = models.CharField(max_length=32)
     recommended = models.BooleanField()
     latest = models.BooleanField()
