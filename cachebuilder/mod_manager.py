@@ -22,10 +22,10 @@ from shutil import move
 import hashlib
 from configparser import ConfigParser
 from TechnicAntani.settings import MODREPO_DIR
-
+import json
 
 class Mod:
-    def __init__(self, dirname, files):
+    def __init__(self, dirname):
         self.slug = dirname.split(path.sep)[-1]
         c = ConfigParser()
         c.read(dirname+path.sep+"Metadata")
@@ -34,14 +34,17 @@ class Mod:
         self.author = c.get("Mod", "Author")
         self.url = c.get("Mod", "Url")
         self.versions = {}
-        for f in files:
-            if f == "Metadata":
-                continue
-            pieces = f.split("-")
-            if pieces[0] == self.slug:
-                if not pieces[1] in self.versions:
-                    self.versions[pieces[1]] = []
-                self.versions[pieces[1]].append(pieces[2].replace(".zip", ""))
+        versionf = open(path.join(dirname,"versions.json"))
+        obj = json.load(versionf)
+        versionf.close()
+        for mcver in obj.keys():
+            self.versions[mcver] = []
+            for version in obj[mcver].keys():
+                modver = {
+                    'version': version,
+                    'file': obj[mcver][version]
+                }
+                self.versions[mcver].append(modver)
 
 
 class ModManager:
@@ -50,7 +53,7 @@ class ModManager:
         self.mods = []
         for root, dirs, files in walk(self.fspath):
             if "Metadata" in files:
-                self.mods.append(Mod(root, files))
+                self.mods.append(Mod(root))
 
 
 def checksum_file(dirpath):
