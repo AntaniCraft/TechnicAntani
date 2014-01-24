@@ -56,8 +56,6 @@ def rebuild_all_caches():
             if cachedver is None:
                 cachedver = VersionCache()
                 cachedver.forgever = p.versions[packver]['forgever']
-
-
                 cachedver.latest = p.versions[packver]['latest']
                 cachedver.recommended = p.versions[packver]['recommended']
                 cachedver.mcversion = p.versions[packver]['mcversion']
@@ -92,15 +90,22 @@ def rebuild_all_caches():
                 confvcache.modInfo = confcache # Fixme refactor modInfo
                 confvcache.version = packver
                 confvcache.save()
+                cachedver.mods.add(confvcache)
 
             for mod in p.versions[packver]['mods'].keys():
                 mc = ModInfoCache.objects.get(name=mod)
-                if mc is None:
-                    # Ok, we have work to do
-                    mr = mm.get_mod(mod)
-                    if mr is None:
-                        raise FileNotFoundError()
-                    mc = _build_cache(mr, p.versions[packver]['mods'][mod])
+                cachedmod = None
+                mr = mm.get_mod(mod)
+                if mr is None:
+                    raise FileNotFoundError()
+                if not mc is None:
+                    cachedmod = ModCache.objects.get(modInfo=mc)
+                if cachedmod is None:
+                    cachedmod = _build_cache(mr, p.versions[packver]['mods'][mod])
+                cachedver.mods.add(cachedmod)
+
+
+
 
     return True
 
