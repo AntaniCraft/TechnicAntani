@@ -20,6 +20,7 @@ from cachebuilder.mod_manager import *
 from cachebuilder.pack_manager import *
 from api.models import *
 from shutil import copy
+from urllib.request import urlretrieve
 import zipfile
 import re
 import uuid
@@ -28,7 +29,7 @@ cleaner_regex = re.compile("\W+")
 filename_regex = re.compile("[a-zA-Z0-9_-]+\.\w{3}")
 
 @shared_task
-def rebuild_all_caches():
+def build_all_caches():
     """
     Updates all caches. Takes forever if there are many things to build
     throws FileNotFoundError if a mod we don't track is requested
@@ -62,8 +63,34 @@ def rebuild_all_caches():
                 cachedver.mcversion_checksum = _get_mc_md5(p.versions[packver]['mcversion'])
                 cachedver.modpack = pc
                 cachedver.save()
-
-                # TODO package forge? use modpack.jar for now. Let's see later
+                # Package forge as modpack.jar. We have to see what to do in the future.
+                if not cachedver.forgever == "":
+                    forgezip = path.join(MODBUILD_DIR, pc.name+ "_forge.zip")
+                    with zipfile.ZipFile(configzip, "w", zipfile.ZIP_DEFLATED) as zipp1:
+                        (tpath, message) = urlretrieve("http://files.minecraftforge.net/maven/net/minecraftforge/forge/"
+                                                       + cachedver.mcversion + "-"
+                                                       + cachedver.forgever +
+                                                       +"/forge-"+ cachedver.mcversion
+                                                       + "-" + cachedver.forgever + "-universal.jar")
+                        if message.get_content_type() != "application/java-archive":
+                            raise FileNotFoundError
+                        zipp1.write(tpath, "bin/modpack.jar")
+                    forgecache = ModInfoCache.objects.get(name="Forge")
+                    if forgecache is None:
+                        forgecache = ModInfoCache()
+                        # Shameless Self Advert
+                        forgecache.author = "cpw,LexManos and MANY others"
+                        forgecache.description = "Forge auto-assembled by TechnicAntani"
+                        forgecache.link = "http://files.minecraftforge.net"
+                        forgecache.pretty_name = "Forge"
+                        forgecache.save()
+                    fvcache = ModCache()
+                    fvcache.localpath = forgezip
+                    fvcache.md5 = checksum_file(forgezip)
+                    fvcache.modInfo = forgecache # Fixme refactor modInfo
+                    fvcache.version = cachedver.forgever
+                    fvcache.save()
+                    cachedver.mods.add(fvcache)
 
                 # Package the zippone with current config in git
                 configzip = path.join(MODBUILD_DIR, pc.name+"_config.zip")
@@ -103,10 +130,6 @@ def rebuild_all_caches():
                 if cachedmod is None:
                     cachedmod = _build_cache(mr, p.versions[packver]['mods'][mod])
                 cachedver.mods.add(cachedmod)
-
-
-
-
     return True
 
 @shared_task
