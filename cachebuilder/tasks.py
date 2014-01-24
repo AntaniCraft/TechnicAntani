@@ -16,11 +16,16 @@
 #############################################################################
 
 from celery import shared_task
-from kombu import compression
 from cachebuilder.mod_manager import *
 from cachebuilder.pack_manager import *
 from api.models import *
+from shutil import copy
 import zipfile
+import re
+import uuid
+
+cleaner_regex = re.compile("\W+")
+filename_regex = re.compile("[a-zA-Z0-9_-]+\.\w{3}")
 
 @shared_task
 def rebuild_all_caches():
@@ -84,10 +89,9 @@ def rebuild_all_caches():
                 confvcache = ModCache()
                 confvcache.localpath = configzip
                 confvcache.md5 = checksum_file(configzip)
-                confvcache.modInfo = confcache
+                confvcache.modInfo = confcache # Fixme refactor modInfo
                 confvcache.version = packver
                 confvcache.save()
-
 
             for mod in p.versions[packver]['mods'].keys():
                 mc = ModInfoCache.objects.get(name=mod)
@@ -97,20 +101,6 @@ def rebuild_all_caches():
                     if mr is None:
                         raise FileNotFoundError()
                     mc = _build_cache(mr, p.versions[packver]['mods'][mod])
-
-
-
-    # for mod in mm.mods:
-    #     info_cache = ModInfoCache.objects.get(name=mod.slug)
-    #     if info_cache is None:
-    #         info_cache = ModInfoCache()
-    #         info_cache.author = mod.author
-    #         info_cache.description = mod.description
-    #         info_cache.link = mod.url
-    #         info_cache.pretty_name = mod.name
-    #         info_cache.save()
-    #     # TODO finish
-
 
     return True
 
@@ -132,7 +122,8 @@ def update_mods():
 def _get_mc_md5(mcver):
     return ""  # TODO get an answer on IRC -> WTF
 
-def _build_cache(mod,version):
+
+def _build_cache(mod, version):
     info_cache = ModInfoCache.objects.get(name=mod.name)
     if info_cache is None:
         info_cache = ModInfoCache()
@@ -141,5 +132,23 @@ def _build_cache(mod,version):
         info_cache.link = mod.url
         info_cache.pretty_name = mod.name
         info_cache.save()
+    tpath = path.join(MODBUILD_DIR, _sanitize_path(mod.name) + "_" + _sanitize_path(uuid.uuid4()) + ".zip")
     if mod.type == "mod":
-        pass
+        with zipfile.ZipFile(tpath, "w", zipfile.ZIP_DEFLATED) as zip:
+            fnm = re.search(filename_regex, mod.versions[version]["file"])
+            fn = mod.versions[version]["file"][fnm.start():fnm.end()]
+            zip.write(fn, path.join("mods", fn))
+    if mod.type == "prepackaged":
+        fn = path.basename(mod.versions[version]["file"])
+        copy(path.join(MODREPO_DIR,_sanitize_path(mod.name),fn), tpath)
+    cache = ModCache()
+    cache.version = version
+    cache.modInfo = info_cache
+    cache.localpath = tpath
+    cache.md5 = checksum_file(tpath)
+    cache.save()
+    return cache
+
+
+def _sanitize_path(ugly):
+    return re.sub(cleaner_regex,'', ugly)

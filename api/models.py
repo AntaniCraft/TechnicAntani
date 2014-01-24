@@ -17,6 +17,7 @@
 
 from django.db import models
 from TechnicAntani.antanisettings import *
+from os.path import basename
 
 
 class ApiKey(models.Model):
@@ -50,7 +51,7 @@ class ModCache(models.Model):
 
     def get_url(self, req):
         mirror_url = SERVE_DOMAIN + SERVE_URL if (SERVE_DOMAIN != "") else "http://" + req.get_host() + SERVE_URL
-        return mirror_url + "/mods/" + self.localpath
+        return mirror_url + "mods/" + basename(self.localpath)
 
 
 class VersionCache(models.Model):
