@@ -15,29 +15,9 @@
 #                                                                           #
 #############################################################################
 
-from django.shortcuts import render,redirect
-from django.contrib.auth.decorators import login_required
-import cachebuilder.tasks as mytasks
+from django import forms
 
 
-@login_required
-def index(request):
-    context = {
-        'username': request.user.username
-    }
-    return render(request, "cachebuilder/index.html", context)
-
-
-@login_required
-def build_all_caches(request):
-    mytasks.build_all_caches.delay()
-    return redirect(index)
-
-@login_required
-def create_modpack(request):
-    if request.method == 'POST':
-        pass
-
-@login_required
-def github_hook(request):
-    pass
+class CreatePack(forms.Form):
+    name = forms.SlugField(max_length=64)
+    gitrepo = forms.CharField(max_length=255)

@@ -25,7 +25,7 @@ class Modpack:
     def __init__(self, name):
         self.name = name
         mainkeys = [
-            'description', 'name', 'url'
+            'description', 'url'
         ]
         versionkeys = [
             'recommended', 'latest',
