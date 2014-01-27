@@ -1,0 +1,18 @@
+{% extends 'index.html' %}
+{% load widget_tweaks %}
+{% block body %}
+      <h2>Add modpack</h2>
+    <form role="form">
+        <div class="form-group">
+            {{ form.name.label_tag }}
+            {{ form.name|add_class:'form-control'|attr:'placeholder:Name of the modpack' }}
+        </div>
+        <div class="form-group">
+            {{ form.gitrepo.label_tag }}
+            {{ form.gitrepo|add_class:'form-control'|attr:'placeholder:http git repo path, http://github.com/somebody/something.git' }}
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Submit" class="form-control btn btn-primary">
+        </div>
+    </form>
+{% endblock %}

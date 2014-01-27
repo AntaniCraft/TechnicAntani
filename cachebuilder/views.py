@@ -18,12 +18,13 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 import cachebuilder.tasks as mytasks
+from cachebuilder.forms import CreatePack
 
 
 @login_required
 def index(request):
     context = {
-        'username': request.user.username
+        'menu': 'cachepacks'
     }
     return render(request, "cachebuilder/index.html", context)
 
@@ -35,8 +36,19 @@ def build_all_caches(request):
 
 @login_required
 def create_modpack(request):
+    context = {
+        'menu': 'createpack'
+    }
     if request.method == 'POST':
-        pass
+        form = CreatePack(request)
+        if form.is_valid():
+            mytasks.clone_modpack(form.cleaned_data['gitrepo'],form.cleaned_data['name']).delay()
+            context['packname'] = form.cleaned_data['name']
+            return render(request, "cachebuilder/creating.html", context)
+    else:
+        form = CreatePack()
+    context['form'] = form
+    return render(request, "cachebuilder/create.html", context)
 
 @login_required
 def github_hook(request):

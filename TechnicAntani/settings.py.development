@@ -38,7 +38,9 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'south',
     'djcelery',
+    'widget_tweaks',
     'api',
+    'cachebuilder',
 )
 
 MIDDLEWARE_CLASSES = (

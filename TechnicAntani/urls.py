@@ -35,6 +35,10 @@ urlpatterns = patterns('',
                        # Cache builder
                        url(r'^cache/$', cachebuilder.index),
                        url(r'^cache/rebuildall$', cachebuilder.build_all_caches),
+
+                       url(r'^modpack/create$', cachebuilder.create_modpack),
+
+                       url(r'^hooks/github$', cachebuilder.github_hook, name="github")
                        )
 
 if settings.DEBUG:

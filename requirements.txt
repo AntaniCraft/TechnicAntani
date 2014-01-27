@@ -12,3 +12,4 @@ paramiko==1.12.1
 pycrypto==2.6.1
 pytz==2013.9
 redis==2.9.0
+django-widget-tweaks==1.3

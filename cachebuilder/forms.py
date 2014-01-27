@@ -21,3 +21,4 @@ from django import forms
 class CreatePack(forms.Form):
     name = forms.SlugField(max_length=64)
     gitrepo = forms.CharField(max_length=255)
+    # TODO gitolite support

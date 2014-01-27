@@ -67,7 +67,7 @@ class Migration(SchemaMigration):
         db.send_create_signal('api', ['ModCache'])
 
         # Adding model 'VersionCache'
-        db.create_table('api_versionscache', (
+        db.create_table('api_versioncache', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('version', self.gf('django.db.models.fields.CharField')(max_length=32)),
             ('recommended', self.gf('django.db.models.fields.BooleanField')()),
@@ -80,13 +80,13 @@ class Migration(SchemaMigration):
         db.send_create_signal('api', ['VersionCache'])
 
         # Adding M2M table for field mods on 'VersionCache'
-        m2m_table_name = db.shorten_name('api_versionscache_mods')
+        m2m_table_name = db.shorten_name('api_versioncache_mods')
         db.create_table(m2m_table_name, (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('versionscache', models.ForeignKey(orm['api.versionscache'], null=False)),
+            ('versioncache', models.ForeignKey(orm['api.versioncache'], null=False)),
             ('modcache', models.ForeignKey(orm['api.modcache'], null=False))
         ))
-        db.create_unique(m2m_table_name, ['versionscache_id', 'modcache_id'])
+        db.create_unique(m2m_table_name, ['versioncache_id', 'modcache_id'])
 
 
     def backwards(self, orm):
@@ -103,10 +103,10 @@ class Migration(SchemaMigration):
         db.delete_table('api_modcache')
 
         # Deleting model 'VersionCache'
-        db.delete_table('api_versionscache')
+        db.delete_table('api_versioncache')
 
         # Removing M2M table for field mods on 'VersionCache'
-        db.delete_table(db.shorten_name('api_versionscache_mods'))
+        db.delete_table(db.shorten_name('api_versioncache_mods'))
 
 
     models = {
@@ -143,7 +143,7 @@ class Migration(SchemaMigration):
             'slug': ('django.db.models.fields.SlugField', [], {'max_length': '255'}),
             'url': ('django.db.models.fields.URLField', [], {'max_length': '200'})
         },
-        'api.versionscache': {
+        'api.versioncache': {
             'Meta': {'object_name': 'VersionCache'},
             'forgever': ('django.db.models.fields.CharField', [], {'max_length': '64'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
