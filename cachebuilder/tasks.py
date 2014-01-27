@@ -19,8 +19,10 @@ from celery import shared_task
 from cachebuilder.mod_manager import *
 from cachebuilder.pack_manager import *
 from api.models import *
+from os import system,path
 from shutil import copy
 from urllib.request import urlretrieve
+from subprocess import Popen,PIPE
 import zipfile
 import re
 import uuid
@@ -132,11 +134,27 @@ def build_all_caches():
                 cachedver.mods.add(cachedmod)
     return True
 
+
 @shared_task
 def update_modpack(repo):
     """
     Updates the repo (the param is the dir|slug). It's just a git pull reporting True if there are updates
     """
+    output = Popen([GIT_EXEC, "pull"], stdout=PIPE, cwd=path.join(MODPACKPATH,repo)).communicate()[0]
+    if "No updates found" in output:
+        return False
+    return True
+
+
+@shared_task
+def clone_modpack(gitrepo, targetdir):
+    """
+    Clones git repo in a new directory
+    """
+    cleandir = _sanitize_path(targetdir)
+    if path.isdir(path.join(MODPACKPATH, cleandir)):
+        return False
+    system(GIT_EXEC + " clone " +  gitrepo + " " + path.join(MODPACKPATH, cleandir))
     return True
 
 @shared_task
@@ -144,6 +162,9 @@ def update_mods():
     """
     Updates the mod repo. Returns True if there are updates (pull not empty)
     """
+    output = Popen([GIT_EXEC, "pull"], stdout=PIPE, cwd=MODREPO_DIR).communicate()[0]
+    if "No updates found" in output:
+        return False
     return True
 
 
