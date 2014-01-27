@@ -34,7 +34,7 @@ urlpatterns = patterns('',
 
                        # Cache builder
                        url(r'^cache/$', cachebuilder.index),
-                       url(r'^cache/rebuildall$', cachebuilder.rebuild_all_caches),
+                       url(r'^cache/rebuildall$', cachebuilder.build_all_caches),
                        )
 
 if settings.DEBUG:

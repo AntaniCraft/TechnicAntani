@@ -29,6 +29,6 @@ def index(request):
 
 
 @login_required
-def rebuild_all_caches(request):
+def build_all_caches(request):
     mytasks.rebuild_all_caches.delay()
     return redirect(index)
