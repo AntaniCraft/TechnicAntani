@@ -18,6 +18,8 @@
 from django.http import HttpResponse
 from api.models import *
 from TechnicAntani.antanisettings import *
+from django.shortcuts import render
+from api.forms import ManageKey
 
 import json
 import re
@@ -119,4 +121,25 @@ def mod(request, modslug=None):
 
 
 def apikeys_manage(request):
-    pass
+    keys = ApiKey.objects.all()
+    if request.method == 'POST':
+        form = ManageKey(request.POST)
+        form.is_valid()
+        if 'deletekey' in form.cleaned_data and not form.cleaned_data['deletekey'] is None:
+            key = ApiKey.objects.get(pk=form.cleaned_data['deletekey'])
+            key.delete()
+        else:
+            if 'addkey' in form.cleaned_data and form.cleaned_data['addkey'] != "":
+                apikey = ApiKey()
+                apikey.key = form.cleaned_data['addkey']
+                apikey.description = form.cleaned_data['keydesc']
+                apikey.save()
+
+    else:
+        form = ManageKey()
+    context = {
+        'menu': 'apikey',
+        'keys': keys,
+        'form': form
+    }
+    return render(request,'api/manage.html',context)

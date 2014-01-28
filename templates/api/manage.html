@@ -1,0 +1,24 @@
+{% extends 'index.html' %}
+{% load widget_tweaks %}
+{% block body %}
+    <h2>Technic Platform API keys</h2>
+    <form role="form" method="post" action="{% url 'api.views.apikeys_manage' %}">
+    {% csrf_token %}
+    <ul class="list-group">
+    {% for apikey in keys %}
+        <li class="list-group-item"><strong>{{ apikey.key }}</strong> {{ apikey.description }}<button name="deletekey" value="{{ apikey.id }}" class="badge btn btn-danger" ><span class="glyphicon glyphicon-remove"></span></button></li>
+    {% endfor %}
+    </ul>
+    <div class="form-inline">
+    <div class="form-group">
+            {{ form.addkey|add_class:'form-control'|attr:'placeholder:Technic Solder API Key' }}
+    </div>
+    <div class="form-group">
+            {{ form.keydesc|add_class:'form-control'|attr:'placeholder:Key Description' }}
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Add Key" class="form-control btn btn-primary">
+    </div>
+    </div>
+    </form>
+{% endblock %}
