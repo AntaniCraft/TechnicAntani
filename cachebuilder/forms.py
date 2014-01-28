@@ -16,9 +16,13 @@
 #############################################################################
 
 from django import forms
+import re
 
 
 class CreatePack(forms.Form):
-    name = forms.SlugField(max_length=64)
     gitrepo = forms.CharField(max_length=255)
     # TODO gitolite support
+
+    def get_name(self):
+        repo = self.cleaned_data['gitrepo']
+        matcher = re.compile(".*/(.*?).git")

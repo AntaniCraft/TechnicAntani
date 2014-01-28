@@ -15,10 +15,12 @@
 #                                                                           #
 #############################################################################
 
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 import cachebuilder.tasks as mytasks
 from cachebuilder.forms import CreatePack
+import json
 
 
 @login_required
@@ -42,8 +44,8 @@ def create_modpack(request):
     if request.method == 'POST':
         form = CreatePack(request)
         if form.is_valid():
-            mytasks.clone_modpack(form.cleaned_data['gitrepo'],form.cleaned_data['name']).delay()
-            context['packname'] = form.cleaned_data['name']
+            mytasks.clone_modpack(form.cleaned_data['gitrepo'], form.get_name()).delay()
+            context['packname'] = form.get_name()
             return render(request, "cachebuilder/creating.html", context)
     else:
         form = CreatePack()
@@ -52,4 +54,6 @@ def create_modpack(request):
 
 @login_required
 def github_hook(request):
-    pass
+    obj = json.loads(request.POST['payload'])
+
+    return HttpResponse("{}")
