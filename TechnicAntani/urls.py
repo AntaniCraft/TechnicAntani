@@ -28,6 +28,7 @@ urlpatterns = patterns('',
 
                        # TechnicSolder API
                        url(r'^api/', include(api_urls)),
+                       url(r'^apikeys$', 'api.views.apikeys_manage'),
 
                        # Home - temporarily use cache builder
                        url(r'^$', cachebuilder.index),
