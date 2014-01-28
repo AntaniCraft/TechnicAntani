@@ -116,3 +116,7 @@ def mod(request, modslug=None):
     for f in fcs:
         result["versions"].append(f.version)
     return HttpResponse(json.dumps(result).replace("\\\\","\\"))
+
+
+def apikeys_manage(request):
+    pass
