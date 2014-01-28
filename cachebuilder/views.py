@@ -19,7 +19,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 import cachebuilder.tasks as mytasks
-from cachebuilder.forms import CreatePack
+from cachebuilder.forms import CreatePack,get_repo_name
 import json
 
 
@@ -42,10 +42,10 @@ def create_modpack(request):
         'menu': 'createpack'
     }
     if request.method == 'POST':
-        form = CreatePack(request)
+        form = CreatePack(request.POST)
         if form.is_valid():
-            mytasks.clone_modpack(form.cleaned_data['gitrepo'], form.get_name()).delay()
-            context['packname'] = form.get_name()
+            #mytasks.clone_modpack(form.cleaned_data['gitrepo'], form.get_name()).delay()
+            context['packname'] = get_repo_name(form.cleaned_data['gitrepo'])
             return render(request, "cachebuilder/creating.html", context)
     else:
         form = CreatePack()

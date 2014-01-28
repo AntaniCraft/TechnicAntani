@@ -17,12 +17,23 @@
 
 from django import forms
 import re
+from cachebuilder.pack_manager import ModpackManager
 
 
 class CreatePack(forms.Form):
     gitrepo = forms.CharField(max_length=255)
     # TODO gitolite support
 
-    def get_name(self):
-        repo = self.cleaned_data['gitrepo']
-        matcher = re.compile(".*/(.*?).git")
+    def clean_gitrepo(self):
+        isgit = re.compile("http.*\.git")
+        if isgit.match(self.cleaned_data['gitrepo']) is None:
+            raise forms.ValidationError("Not a valid git repo. Please use http git link.", code='invalidurl')
+        pm = ModpackManager()
+        if get_repo_name(self.cleaned_data['gitrepo']) in pm.list_packs():
+            raise forms.ValidationError("Cannot assign a duplicate name. Rename your git repo", code='duplicatename')
+        return self.cleaned_data['gitrepo']
+
+def get_repo_name(mrepo):
+    matcher = re.compile(".*/(.*?)\.git")
+    gm = matcher.match(mrepo)
+    return gm.group(1)

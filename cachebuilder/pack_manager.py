@@ -67,7 +67,7 @@ class ModpackManager:
         Initialize in a VERY lazy way
         """
         for dirf in listdir(MODPACKPATH):
-            if path.isdir(dirf) and not dirf.startswith("."):
+            if path.isdir(path.join(MODPACKPATH, dirf)):
                 self.packs[dirf] = None
 
     def get_pack(self,name):

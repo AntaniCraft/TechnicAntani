@@ -2,12 +2,18 @@
 {% load widget_tweaks %}
 {% block body %}
       <h2>Add modpack</h2>
-    <form role="form">
+    <form role="form" method="post" action="{% url 'cachebuilder.views.create_modpack' %}">
+    {% csrf_token %}
+        {% if form.gitrepo.errors %}
+            <div class="alert alert-danger">
+        {{ form.gitrepo.errors }}
+            </div>
+        {% endif %}
         <div class="form-group">
             {{ form.name.label_tag }}
             {{ form.name|add_class:'form-control'|attr:'placeholder:Name of the modpack' }}
         </div>
-        <div class="form-group">
+        <div class="form-group{% if form.gitrepo.errors %} has-error{% endif %}">
             {{ form.gitrepo.label_tag }}
             {{ form.gitrepo|add_class:'form-control'|attr:'placeholder:http git repo path, http://github.com/somebody/something.git' }}
         </div>
