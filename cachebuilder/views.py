@@ -19,7 +19,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 import cachebuilder.tasks as mytasks
-from cachebuilder.forms import CreatePack,get_repo_name
+from cachebuilder.forms import CreatePack,get_repo_name,Settings
 import json
 
 
@@ -53,6 +53,20 @@ def create_modpack(request):
     return render(request, "cachebuilder/create.html", context)
 
 @login_required
+def update_modrepo(request):
+    context = {
+        'menu': 'updatemodrepo'
+    }
+    if request.method == 'POST':
+        form = Settings(request.POST)
+        if form.is_valid():
+            #mytasks.update_modrepo(form.cleaned_data['modrepo']).delay()
+            return render(request, "cachebuilder/modrepoupdate.html", context)
+    else:
+        form = Settings()
+    context['form'] = form
+    return render(request, "cachebuilder/settings.html", context)
+
 def github_hook(request):
     obj = json.loads(request.POST['payload'])
 

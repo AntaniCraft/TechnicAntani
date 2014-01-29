@@ -1,17 +1,17 @@
 {% extends 'index.html' %}
 {% load widget_tweaks %}
 {% block body %}
-      <h2>Add modpack</h2>
-    <form role="form" method="post" action="{% url 'cachebuilder.views.create_modpack' %}">
+    <h2>Settings</h2>
+    <form role="form" method="post" action="{% url 'cachebuilder.views.update_modrepo' %}">
     {% csrf_token %}
-        {% if form.gitrepo.errors %}
+        {% if form.modrepo.errors %}
             <div class="alert alert-danger">
-        {{ form.gitrepo.errors }}
+        {{ form.modrepo.errors }}
             </div>
         {% endif %}
         <div class="form-group{% if form.gitrepo.errors %} has-error{% endif %}">
-            {{ form.gitrepo.label_tag }}
-            {{ form.gitrepo|add_class:'form-control'|attr:'placeholder:http git repo path, http://github.com/somebody/something.git' }}
+            {{ form.modrepo.label_tag }}
+            {{ form.modrepo|add_class:'form-control'|attr:'placeholder:http git repo path, http://github.com/somebody/something.git' }}
         </div>
         <div class="form-group">
             <input type="submit" value="Submit" class="form-control btn btn-primary">
