@@ -69,5 +69,5 @@ def update_modrepo(request):
 
 def github_hook(request):
     obj = json.loads(request.POST['payload'])
-
+    mytasks.update_modpack(obj['repository']['name']).delay()
     return HttpResponse("{}")
