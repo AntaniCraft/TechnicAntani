@@ -42,8 +42,13 @@ This is the base page. Its design is extended by all private templates in Techni
           <li {% if 'createpack' in menu %}class="active"{% endif %}><a href="{% url 'cachebuilder.views.create_modpack' %}">Add modpack</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><b class="navbar-text"><span class="glyphicon glyphicon-user"></span> {{ user.username }}</b></li>
-            <li><a href="/logout" >Logout</a></li>
+
+            <li class="dropdown">
+                <a href="#" data-toggle="dropdown" class="dropdown-toggle"><span class="glyphicon glyphicon-user"></span> {{ user.username }} <span class="caret"></span> </a>
+                <ul class="dropdown-menu">
+                    <li><a href="/logout" >Logout</a></li>
+                </ul>
+            </li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
