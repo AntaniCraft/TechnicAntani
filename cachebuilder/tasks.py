@@ -19,16 +19,17 @@ from celery import shared_task
 from cachebuilder.mod_manager import *
 from cachebuilder.pack_manager import *
 from api.models import *
-from os import system,path
+from os import system, path
 from shutil import copy
 from urllib.request import urlretrieve
-from subprocess import Popen,PIPE
+from subprocess import Popen, PIPE
 import zipfile
 import re
 import uuid
 
 cleaner_regex = re.compile("\W+")
 filename_regex = re.compile("[a-zA-Z0-9_-]+\.\w{3}")
+
 
 @shared_task
 def build_all_caches():
@@ -41,13 +42,18 @@ def build_all_caches():
     pm = ModpackManager()
     for pack in pm.list_packs():
         p = pm.get_pack(pack)
-        pc = ModpackCache.objects.get(slug=pack)
-        if pc is None:
+        pc = ModpackCache.objects.all().filter(slug=pack)
+        if len(pc) == 0:
+            # Skip. Not a valid pack
+            if p is None:
+                continue
             pc = ModpackCache()
             pc.slug = pack
             pc.name = p.name
             pc.description = p.description
             pc.url = p.url
+        else:
+            pc = pc[0]  # Fetch first
         # Refresh md5 - just in case
         pc.background_md5 = checksum_file(p.get_background())
         pc.logo_md5 = checksum_file(p.get_logo())
@@ -55,8 +61,8 @@ def build_all_caches():
         pc.save()
         # packvers=VersionCache.objects.filter(modpack=pc)
         for packver in p.versions.keys():
-            cachedver = VersionCache.objects.get(modpack=pc,version=packver)
-            if cachedver is None:
+            cachedver = VersionCache.objects.all().filter(modpack=pc, version=packver)
+            if len(cachedver) == 0:
                 cachedver = VersionCache()
                 cachedver.forgever = p.versions[packver]['forgever']
                 cachedver.latest = p.versions[packver]['latest']
@@ -65,9 +71,11 @@ def build_all_caches():
                 cachedver.mcversion_checksum = _get_mc_md5(p.versions[packver]['mcversion'])
                 cachedver.modpack = pc
                 cachedver.save()
+            else:
+                cachedver = cachedver[0]
                 # Package forge as modpack.jar. We have to see what to do in the future.
                 if not cachedver.forgever == "":
-                    forgezip = path.join(MODBUILD_DIR, pc.name+ "_forge.zip")
+                    forgezip = path.join(MODBUILD_DIR, pc.name + "_forge.zip")
                     with zipfile.ZipFile(configzip, "w", zipfile.ZIP_DEFLATED) as zipp1:
                         (tpath, message) = urlretrieve("http://files.minecraftforge.net/maven/net/minecraftforge/forge/"
                                                        + cachedver.mcversion + "-"
@@ -77,8 +85,8 @@ def build_all_caches():
                         if message.get_content_type() != "application/java-archive":
                             raise FileNotFoundError
                         zipp1.write(tpath, "bin/modpack.jar")
-                    forgecache = ModInfoCache.objects.get(name="Forge")
-                    if forgecache is None:
+                    forgecache = ModInfoCache.objects.all.filter(name="Forge", version=cachedver.forgever)
+                    if len(forgecache) == 0:
                         forgecache = ModInfoCache()
                         # Shameless Self Advert
                         forgecache.author = "cpw,LexManos and MANY others"
@@ -86,6 +94,9 @@ def build_all_caches():
                         forgecache.link = "http://files.minecraftforge.net"
                         forgecache.pretty_name = "Forge"
                         forgecache.save()
+                    else:
+                        forgecache = forgecache[0]
+
                     fvcache = ModCache()
                     fvcache.localpath = forgezip
                     fvcache.md5 = checksum_file(forgezip)
@@ -116,7 +127,7 @@ def build_all_caches():
                 confvcache = ModCache()
                 confvcache.localpath = configzip
                 confvcache.md5 = checksum_file(configzip)
-                confvcache.modInfo = confcache # Fixme refactor modInfo
+                confvcache.modInfo = confcache  # Fixme refactor modInfo
                 confvcache.version = packver
                 confvcache.save()
                 cachedver.mods.add(confvcache)
@@ -140,7 +151,7 @@ def update_modpack(repo):
     """
     Updates the repo (the param is the dir|slug). It's just a git pull reporting True if there are updates
     """
-    output = Popen([GIT_EXEC, "pull"], stdout=PIPE, cwd=path.join(MODPACKPATH,repo)).communicate()[0]
+    output = Popen([GIT_EXEC, "pull"], stdout=PIPE, cwd=path.join(MODPACKPATH, repo)).communicate()[0]
     if "No updates found" in output:
         return False
     return True
@@ -153,9 +164,10 @@ def clone_modpack(gitrepo, targetdir):
     """
     cleandir = _sanitize_path(targetdir)
     if path.isdir(path.join(MODPACKPATH, cleandir)):
-        return False
-    system(GIT_EXEC + " clone " +  gitrepo + " " + path.join(MODPACKPATH, cleandir))
-    return True
+        print('NOPE. There\'s a dir named like this.')
+    system(GIT_EXEC + ' clone "' + gitrepo + '" ' + path.join(MODPACKPATH, cleandir))
+    print("Repo created. Building")
+    build_all_caches()
 
 @shared_task
 def update_mods():
@@ -166,6 +178,14 @@ def update_mods():
     if "No updates found" in output:
         return False
     return True
+
+
+@shared_task
+def change_mod_repo(newrepo):
+    if path.isdir(path.join(MODREPO_DIR, '.git')):
+        system('rm -rf ' + MODREPO_DIR + '/*')
+        system('rm -rf ' + MODREPO_DIR + '/.??*')
+    system(GIT_EXEC + ' clone "' + newrepo + '" ' + MODREPO_DIR)
 
 
 def _get_mc_md5(mcver):

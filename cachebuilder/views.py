@@ -44,7 +44,7 @@ def create_modpack(request):
     if request.method == 'POST':
         form = CreatePack(request.POST)
         if form.is_valid():
-            #mytasks.clone_modpack(form.cleaned_data['gitrepo'], form.get_name()).delay()
+            mytasks.clone_modpack.delay(form.cleaned_data['gitrepo'], get_repo_name(form.cleaned_data['gitrepo']))
             context['packname'] = get_repo_name(form.cleaned_data['gitrepo'])
             return render(request, "cachebuilder/creating.html", context)
     else:
@@ -60,7 +60,7 @@ def update_modrepo(request):
     if request.method == 'POST':
         form = Settings(request.POST)
         if form.is_valid():
-            #mytasks.update_modrepo(form.cleaned_data['modrepo']).delay()
+            mytasks.change_mod_repo.delay(form.cleaned_data['modrepo'])
             return render(request, "cachebuilder/modrepoupdate.html", context)
     else:
         form = Settings()

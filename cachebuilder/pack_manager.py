@@ -50,11 +50,23 @@ class Modpack:
                 self.versions[version] = version_obj
 
     def get_background(self):
-        return path.join(MODPACKPATH,self.name,"assets","background.jpg")
+        return path.join(MODPACKPATH, self.name, "assets", "background.jpg")
+
     def get_logo(self):
-        return path.join(MODPACKPATH,self.name,"assets","logo.png")
+        return path.join(MODPACKPATH, self.name, "assets", "logo.png")
+
     def get_icon(self):
-        return path.join(MODPACKPATH,self.name,"assets","icon.png")
+        return path.join(MODPACKPATH, self.name, "assets", "icon.png")
+
+    def get_versions(self):
+        return self.versions.keys()
+
+    def get_version(self, version):
+        return self.versions[version]
+
+    def get_mods(self, version):
+        return self.versions[version]['mods']
+
 
 class ModpackManager:
     """
@@ -75,13 +87,13 @@ class ModpackManager:
         Loads the Modpack data or gets it from the cache
         throws IOException if it can't load the json the first time
         """
-        try:
-            ret = self.packs[name]
-        except KeyError:
-            if name in self.packs.keys():
-                # It may fail
-                self.packs[name] = Modpack(name)
-                ret = self.packs[name]
+
+        if self.packs[name] is None:
+            try:
+                 self.packs[name] = Modpack(name)
+            except Exception: #Catch all
+                ret = None
+        ret = self.packs[name]
         return ret
 
     def list_packs(self):
