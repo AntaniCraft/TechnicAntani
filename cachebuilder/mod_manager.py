@@ -17,31 +17,29 @@
 
 # This will be SLOW. As HELL.
 
-from os import path, walk, mkdir
-from shutil import move
-import hashlib
-from configparser import ConfigParser
+from os import path, walk
 from TechnicAntani.settings import MODREPO_DIR
 import json
 
+
 class Mod:
     def __init__(self, dirname):
-        self.slug = dirname.split(path.sep)[-1]
-        c = ConfigParser()
-        c.read(dirname+path.sep+"Metadata")
-        self.name = c.get("Mod", "Name")
-        self.description = c.get("Mod", "Description")
-        self.author = c.get("Mod", "Author")
-        self.url = c.get("Mod", "Url")
-        self.type = c.get("Mod", "Type")  # mod, prepackaged
-        self.versions = {}
-        versionf = open(path.join(dirname,"versions.json"))
+        # TODO sanitizing and syntax check
+        versionf = open(path.join(dirname, "mod.json"))
         obj = json.load(versionf)
         versionf.close()
-        for version in obj.keys():
+        self.slug = dirname.split(path.sep)[-1]
+        self.name = obj["name"]
+        self.description = obj["description"]
+        self.author = obj["author"]
+        self.url = obj["url"]
+        self.type = obj["type"]  # mod, prepackaged
+        self.versions = {}
+
+        for version in obj['versions'].keys():
             self.versions[version] = {
-                'file': obj[version]['file'],
-                'mcvers': obj[version]['mc']
+                'file': obj["versions"][version]['file'],
+                'mcvers': obj["versions"][version]['minecraft']
             }
 
 
@@ -50,7 +48,7 @@ class ModManager:
         self.fspath = MODREPO_DIR
         self.mods = []
         for root, dirs, files in walk(self.fspath):
-            if "Metadata" in files:
+            if "mod.json" in files:
                 self.mods.append(Mod(root))
 
     def get_mod(self, slug):
@@ -58,13 +56,3 @@ class ModManager:
             if mod.slug == slug:
                 return mod
         return None
-
-
-def checksum_file(dirpath):
-    afile = open(dirpath, "rb")
-    hasher = hashlib.md5()
-    buf = afile.read(65536)
-    while len(buf) > 0:
-        hasher.update(buf)
-        buf = afile.read(65536)
-    return hasher.hexdigest()
