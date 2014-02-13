@@ -34,15 +34,6 @@ class CreatePack(forms.Form):
         return self.cleaned_data['gitrepo']
 
 
-class Settings(forms.Form):
-    modrepo = forms.CharField(max_length=255)
-
-    def clean_modrepo(self):
-        isgit = re.compile("http.*\.git")
-        if isgit.match(self.cleaned_data['modrepo']) is None:
-            raise forms.ValidationError("Not a valid git repo. Please use http git link.", code='invalidurl')
-        return self.cleaned_data['modrepo']
-
 def get_repo_name(mrepo):
     matcher = re.compile(".*/(.*?)\.git")
     gm = matcher.match(mrepo)

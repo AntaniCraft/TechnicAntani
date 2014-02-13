@@ -20,15 +20,9 @@ from cachebuilder.mod_manager import *
 from cachebuilder.pack_manager import *
 from api.models import *
 from os import system, path
-from cachebuilder.utils import checksum_file, build_forge, build_config, build_mod
-from urllib.request import urlretrieve
+from cachebuilder.utils import checksum_file, build_forge, build_config, build_mod, sanitize_path
 from subprocess import Popen, PIPE
-import zipfile
-import re
 import logging
-
-cleaner_regex = re.compile("\W+")
-filename_regex = re.compile("[a-zA-Z0-9_-]+\.\w{3}")
 
 
 @shared_task
@@ -91,7 +85,7 @@ def build_all_caches():
                 cachedver.mods.add(confcache)
 
             for mod in p.versions[packver]['mods'].keys():
-                modcache = build_mod(mod,p.versions[packver]['mods'][mod],mm)
+                modcache = build_mod(mod, p.versions[packver]['mods'][mod], mm)
                 cachedver.mods.add(modcache)
     return True
 
@@ -101,8 +95,11 @@ def update_modpack(repo):
     """
     Updates the repo (the param is the dir|slug). It's just a git pull reporting True if there are updates
     """
+    log = logging.getLogger("update_modpack")
     output = Popen([GIT_EXEC, "pull"], stdout=PIPE, cwd=path.join(MODPACKPATH, repo)).communicate()[0]
+    log.info(output)
     if "No updates found" in output:
+        log.warning('No updates found. Weird. Modpack:  ' + repo)
         return False
     return True
 
@@ -112,23 +109,14 @@ def clone_modpack(gitrepo, targetdir):
     """
     Clones git repo in a new directory
     """
-    cleandir = _sanitize_path(targetdir)
+    log = logging.getLogger("clone_modpack")
+    cleandir = sanitize_path(targetdir)
     if path.isdir(path.join(MODPACKPATH, cleandir)):
-        print('NOPE. There\'s a dir named like this.')
+        log.error('NOPE. There\'s a dir named like this.')
+        return None
     system(GIT_EXEC + ' clone "' + gitrepo + '" ' + path.join(MODPACKPATH, cleandir))
-    print("Repo created. Building")
+    log.info("Repo created. Building")
     build_all_caches()
-
-@shared_task
-def update_mods():
-    """
-    Updates the mod repo. Returns True if there are updates (pull not empty)
-    """
-    output = Popen([GIT_EXEC, "pull"], stdout=PIPE, cwd=MODREPO_DIR).communicate()[0]
-    if "No updates found" in output:
-        return False
-    return True
-
 
 @shared_task
 def change_mod_repo(newrepo):

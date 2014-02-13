@@ -42,6 +42,12 @@ class Mod:
                 'mcvers': obj["versions"][version]['minecraft']
             }
 
+    def __str__(self):
+        return self.slug
+
+    def __repr__(self):
+        return "<Mod " + self.__str__() + ">"
+
 
 class ModManager:
     def __init__(self):
@@ -56,3 +62,9 @@ class ModManager:
             if mod.slug == slug:
                 return mod
         return None
+
+    def get_mods(self):
+        arr = []
+        for m in self.mods:
+            arr.append(m.slug)
+        return arr

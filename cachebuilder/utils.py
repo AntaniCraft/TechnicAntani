@@ -29,12 +29,13 @@ import logging
 import re
 import uuid
 
-filename_regex = re.compile("[a-zA-Z0-9_-]+\.\w{3}")
+filename_regex = re.compile("[\.a-zA-Z0-9_-]+\.\w{3}")
 cleaner_regex = re.compile("\W+")
 
 
-def _sanitize_path(ugly):
-    return re.sub(cleaner_regex, '', ugly)
+def sanitize_path(ugly):
+    print(ugly)
+    return re.sub(cleaner_regex, '', str(ugly))
 
 
 def get_mod_info_by_name(name):
@@ -73,7 +74,7 @@ def build_forge(version, mcver):
     if not forge is None:
         return forge
     localfile = fetch_forge(version, mcver)
-    built = os.path.join(MODBUILD_DIR, "forge_"+_sanitize_path(mcver)+"_"+_sanitize_path(version)+".zip")
+    built = os.path.join(MODBUILD_DIR, "forge_"+sanitize_path(mcver)+"_"+sanitize_path(version)+".zip")
     with zipfile.ZipFile(built, "w", zipfile.ZIP_DEFLATED) as zipp1:
         zipp1.write(localfile, "bin/modpack.jar")
     os.unlink(localfile)  # We don't need it any more
@@ -104,7 +105,7 @@ def build_config(packname, version):
     if not cfg is None:
         return cfg
     cp = os.path.join(MODPACKPATH, "config")
-    cz = os.path.join(MODBUILD_DIR, _sanitize_path(packname) +"_" + _sanitize_path(version) + "_config.zip")
+    cz = os.path.join(MODBUILD_DIR, sanitize_path(packname) + "_" + sanitize_path(version) + "_config.zip")
     with zipfile.ZipFile(cz, "w", zipfile.ZIP_DEFLATED) as zipp1:
         rootlen = len(cp)
         for base, dirs, files in os.walk(cp):
@@ -144,16 +145,16 @@ def build_mod(name, version, mm):
         log.error("There is no mod " + name + " version " + version)
         return None
 
-    mz = os.path.join(MODBUILD_DIR, _sanitize_path(mod.name) + "_" + _sanitize_path(uuid.uuid4()) + ".zip")
+    mz = os.path.join(MODBUILD_DIR, sanitize_path(mod.slug) + "_" + sanitize_path(uuid.uuid4()) + ".zip")
     log.info("Will be saved in " + mz)
     if mod.type == "mod":
         with zipfile.ZipFile(mz, "w", zipfile.ZIP_DEFLATED) as zip:
             fnm = re.search(filename_regex, mod.versions[version]["file"])
             fn = mod.versions[version]["file"][fnm.start():fnm.end()]
-            zip.write(fn, os.path.join("mods", fn))
+            zip.write(os.path.join(MODREPO_DIR, mod.slug, fn), os.path.join("mods", fn))
     if mod.type == "prepackaged":
         fn = os.path.basename(mod.versions[version]["file"])
-        os.copy(os.path.join(MODREPO_DIR,_sanitize_path(mod.name),fn), mz)
+        os.copy(os.path.join(MODREPO_DIR, sanitize_path(mod.name), fn), mz)
 
     mi = get_mod_info_by_name(name)
     if mi is None:

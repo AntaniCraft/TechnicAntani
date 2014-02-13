@@ -52,20 +52,6 @@ def create_modpack(request):
     context['form'] = form
     return render(request, "cachebuilder/create.html", context)
 
-@login_required
-def update_modrepo(request):
-    context = {
-        'menu': 'updatemodrepo'
-    }
-    if request.method == 'POST':
-        form = Settings(request.POST)
-        if form.is_valid():
-            mytasks.change_mod_repo.delay(form.cleaned_data['modrepo'])
-            return render(request, "cachebuilder/modrepoupdate.html", context)
-    else:
-        form = Settings()
-    context['form'] = form
-    return render(request, "cachebuilder/settings.html", context)
 
 def github_hook(request):
     obj = json.loads(request.POST['payload'])
