@@ -119,6 +119,7 @@ def clone_modpack(gitrepo, targetdir):
     log.info("Repo created. Building")
     build_all_caches()
 
+
 @shared_task
 def change_mod_repo(newrepo):
     if path.isdir(path.join(MODREPO_DIR, '.git')):
