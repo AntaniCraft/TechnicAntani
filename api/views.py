@@ -76,9 +76,9 @@ def modpack_build(request, slug, build):
     for modo in b.mods.all():
         m = {
             "name": modo.modInfo.name,
-            "version": mod.version,
-            "md5": mod.checksum,
-            "url": fucking_php_escape(mod.getUrl(request)),
+            "version": modo.version,
+            "md5": modo.md5,
+            "url": fucking_php_escape(modo.get_url(request)),
         }
         result["mods"].append(m)
     return HttpResponse(json.dumps(result).replace("\\\\", "\\"))

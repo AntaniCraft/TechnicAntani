@@ -73,6 +73,7 @@ def build_all_caches():
                 cachedver.mcversion = p.versions[packver]['mcversion']
                 cachedver.mcversion_checksum = ""  # wot
                 cachedver.modpack = pc
+                cachedver.version = packver
                 cachedver.save()
 
                 # Package forge as modpack.jar. We have to see what to do in the future.

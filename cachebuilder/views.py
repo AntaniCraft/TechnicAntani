@@ -19,7 +19,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 import cachebuilder.tasks as mytasks
-from cachebuilder.forms import CreatePack,get_repo_name,Settings
+from cachebuilder.forms import CreatePack, get_repo_name
 import json
 
 
