@@ -26,7 +26,7 @@ import json
 @login_required
 def index(request):
     context = {
-        'menu': 'cachepacks'
+        'menu': 'cache_cachepacks'
     }
     return render(request, "cachebuilder/index.html", context)
 
@@ -39,7 +39,7 @@ def build_all_caches(request):
 @login_required
 def create_modpack(request):
     context = {
-        'menu': 'createpack'
+        'menu': 'cache_createpack'
     }
     if request.method == 'POST':
         form = CreatePack(request.POST)

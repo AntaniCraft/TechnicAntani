@@ -37,9 +37,20 @@ This is the base page. Its design is extended by all private templates in Techni
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li {% if 'apikey' in menu %}class="active"{% endif %}><a href="{% url 'api.views.apikeys_manage' %}">API Keys</a></li>
-            <li {% if 'createpack' in menu %}class="active"{% endif %}><a href="{% url 'cachebuilder.views.create_modpack' %}">Add modpack</a></li>
-            <li {% if 'cachepack' in menu %}class="active"{% endif %}><a href="{% url 'cachebuilder.views.index' %}">Advanced</a></li>
+            <li class="dropdown{% if 'platform' in menu %} active{% endif %}">
+                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Platform&nbsp;<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li {% if 'apikey' in menu %}class="active"{% endif %}><a href="{% url 'api.views.apikeys_manage' %}">API Keys</a></li>
+                </ul>
+            </li>
+            <li class="dropdown{% if 'cache' in menu %} active{% endif %}" >
+                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Cache&nbsp;<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li {% if 'createpack' in menu %}class="active"{% endif %}><a href="{% url 'cachebuilder.views.create_modpack' %}">Add modpack</a></li>
+                    <li {% if 'cachepack' in menu %}class="active"{% endif %}><a href="{% url 'cachebuilder.views.index' %}">Advanced</a></li>
+                </ul>
+            </li>
+
           </ul>
           <ul class="nav navbar-nav navbar-right">
 

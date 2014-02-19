@@ -138,7 +138,7 @@ def apikeys_manage(request):
     else:
         form = ManageKey()
     context = {
-        'menu': 'apikey',
+        'menu': 'platform_apikey',
         'keys': keys,
         'form': form
     }
