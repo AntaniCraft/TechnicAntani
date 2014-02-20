@@ -174,3 +174,7 @@ def build_mod(name, version, mm):
     return mv
 
 
+def delete_built():
+    for base, dirs, files in os.walk(MODBUILD_DIR):
+        for ifile in files:
+            os.unlink(os.path.join(base, ifile))

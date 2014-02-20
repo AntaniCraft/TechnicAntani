@@ -20,9 +20,10 @@ from cachebuilder.mod_manager import *
 from cachebuilder.pack_manager import *
 from api.models import *
 from os import system, path
-from cachebuilder.utils import checksum_file, build_forge, build_config, build_mod, sanitize_path
+from cachebuilder.utils import checksum_file, build_forge, build_config, build_mod, sanitize_path, delete_built
 from subprocess import Popen, PIPE
 import logging
+import shutil
 
 
 @shared_task
@@ -129,8 +130,20 @@ def change_mod_repo(newrepo):
 
 @shared_task
 def clear_caches():
-    pass
+    delete_built()
+    for obj in VersionCache.objects.all():
+        obj.delete()
+    for obj in ModpackCache.objects.all():
+        obj.delete()
+    for obj in ModCache.objects.all():
+        obj.delete()
+    for obj in ModInfoCache.objects.all():
+        obj.delete()
+
 
 @shared_task
 def purge_caches():
-    pass
+    mp = ModpackManager()
+    for pack in mp.list_packs():
+        shutil.rmtree(os.path.join(MODPACKPATH,pack))
+    clear_caches()
