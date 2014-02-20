@@ -1,4 +1,34 @@
 {% extends 'index.html' %}
 {% block body %}
-      <a href="{% url 'cachebuilder.views.build_all_caches' %}"><button type="button" class="btn btn-primary btn-lg">Rebuild all caches</button></a>
+    <div class="page-header">
+    <h1>Cache Control Panel</h1>
+    </div>
+    <div class="container">
+        <div class="col-xs-4">
+            <a href="{% url 'cachebuilder.views.build_caches' %}" class="btn btn-primary btn-lg center-block"><span class="glyphicon-refresh glyphicon"></span>&nbsp;Build</a>
+            <p></p>
+            <p>
+                This action begins an incremental build of caches. It triggers automatically after any repo is updated in git. This is just a manual trigger.
+            </p>
+        </div>
+        <div class="col-xs-4">
+            <a href="{% url 'cachebuilder.views.clear_caches' %}" class="btn btn-warning btn-lg center-block"><span class="glyphicon-warning-sign glyphicon"></span>&nbsp;Clear</a>
+            <p></p>
+            <p>
+                DANGER! Deletes all caches in the database and the built mods in the directory. This resets all the database environment and build dir. Rebuild cache after operation is finished will restore
+                everything from the filesystem.
+            </p>
+        </div>
+        <div class="col-xs-4">
+            <a href="{% url 'cachebuilder.views.purge_caches' %}" class="btn btn-danger btn-lg center-block"><span class="glyphicon-exclamation-sign glyphicon"></span>&nbsp;Purge</a>
+            <p></p>
+            <p>
+                Deletes EVERYTHING. You will need to add again all modpacks.
+            </p>
+        </div>
+        <div class="col-xs-12 well">
+             All the above actions are for maintainance purposes. You aren't supposed to use them normally, as Technic Antani does everything automatically.
+             All jobs above are performed in the background and as of now no indication of progress is given.
+        </div>
+    </div>
 {% endblock %}

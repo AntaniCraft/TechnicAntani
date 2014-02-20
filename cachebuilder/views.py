@@ -32,8 +32,18 @@ def index(request):
 
 
 @login_required
-def build_all_caches(request):
+def build_caches(request):
     mytasks.build_all_caches.delay()
+    return redirect(index)
+
+@login_required
+def clear_caches(request):
+    mytasks.clear_caches.delay()
+    return redirect(index)
+
+@login_required
+def purge_caches(request):
+    mytasks.purge_caches.delay()
     return redirect(index)
 
 @login_required

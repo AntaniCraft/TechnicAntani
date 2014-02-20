@@ -31,7 +31,7 @@ def build_all_caches():
     Updates all caches. Takes forever if there are many things to build
     throws FileNotFoundError if a mod we don't track is requested
     """
-    log = logging.getLogger("build_all_caches")
+    log = logging.getLogger("build_caches")
 
     # Read up to date data from the filesystem
     mm = ModManager()  # GASP!
@@ -126,3 +126,11 @@ def change_mod_repo(newrepo):
         system('rm -rf ' + MODREPO_DIR + '/*')
         system('rm -rf ' + MODREPO_DIR + '/.??*')
     system(GIT_EXEC + ' clone "' + newrepo + '" ' + MODREPO_DIR)
+
+@shared_task
+def clear_caches():
+    pass
+
+@shared_task
+def purge_caches():
+    pass
