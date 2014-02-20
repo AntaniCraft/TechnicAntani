@@ -1,0 +1,15 @@
+{% extends 'index.html' %}
+{% block body %}
+    <div class="page-header">
+        <h1>Mod Packs in cache</h1>
+    </div>
+    <ul class="list-group">
+    {% for pack in packs %}
+        <li class="list-group-item">{{ pack.name }}&nbsp;<small>[{{ pack.slug }}]</small><span class="clearfix"></span>
+            {% for ver in pack.versioncache_set.all %}
+                <span class="label label-default">{{ ver.version }}</span>
+            {% endfor %}
+        </li>
+    {% endfor %}
+    </ul>
+{% endblock %}

@@ -62,7 +62,6 @@ def create_modpack(request):
     context['form'] = form
     return render(request, "cachebuilder/create.html", context)
 
-
 def github_hook(request):
     obj = json.loads(request.POST['payload'])
     mytasks.update_modpack(obj['repository']['name']).delay()

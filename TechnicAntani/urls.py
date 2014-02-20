@@ -39,6 +39,10 @@ urlpatterns = patterns('',
                        url(r'^cache/clear', cachebuilder.clear_caches),
                        url(r'^cache/purge$', cachebuilder.purge_caches),
 
+                       # Inspector
+                       url(r'^inspect/mods$', 'inspector.views.inspect_mods'),
+                       url(r'^inspect/packs$', 'inspector.views.inspect_packs'),
+
                        url(r'^modpack/create$', cachebuilder.create_modpack),
 
                        url(r'^hooks/github$', cachebuilder.github_hook, name="github")

@@ -1,0 +1,15 @@
+{% extends 'index.html' %}
+{% block body %}
+    <div class="page-header">
+        <h1>Mods in cache</h1>
+    </div>
+    <ul class="list-group">
+    {% for mod in mods %}
+        <li class="list-group-item">{{ mod.pretty_name }}&nbsp;<small>[{{ mod.name }}]</small><span class="clearfix"></span>
+            {% for ver in mod.modcache_set.all %}
+                <span class="label label-default">{{ ver.version }}</span>
+            {% endfor %}
+        </li>
+    {% endfor %}
+    </ul>
+{% endblock %}
