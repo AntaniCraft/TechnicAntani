@@ -38,7 +38,6 @@ def build_all_caches():
     mm = ModManager()  # GASP!
     pm = ModpackManager()
 
-
     for pack in pm.list_packs():
         p = pm.get_pack(pack)
         pc = ModpackCache.objects.all().filter(slug=pack).first()
@@ -81,8 +80,6 @@ def build_all_caches():
             if cachedver is None:
                 cachedver = VersionCache()
                 cachedver.forgever = p.versions[packver]['forgever']
-                cachedver.latest = p.versions[packver]['latest']
-                cachedver.recommended = p.versions[packver]['recommended']
                 cachedver.mcversion = p.versions[packver]['mcversion']
                 cachedver.mcversion_checksum = ""  # wot
                 cachedver.modpack = pc
@@ -98,6 +95,8 @@ def build_all_caches():
                 confcache = build_config(pc.slug, cachedver.version)
                 cachedver.mods.add(confcache)
 
+            cachedver.latest = p.versions[packver]['latest']
+            cachedver.recommended = p.versions[packver]['recommended']
             for mod in p.versions[packver]['mods'].keys():
                 modcache = build_mod(mod, p.versions[packver]['mods'][mod], mm)
                 cachedver.mods.add(modcache)
