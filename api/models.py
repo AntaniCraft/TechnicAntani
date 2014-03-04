@@ -49,6 +49,9 @@ class ModCache(models.Model):
     md5 = models.CharField(max_length=32)
     modInfo = models.ForeignKey(ModInfoCache)
 
+    def get_filename(self):
+        return basename(self.localpath)
+
     def get_url(self, req):
         mirror_url = SERVE_DOMAIN + SERVE_URL if (SERVE_DOMAIN != "") else "http://" + req.get_host() + SERVE_URL
         return mirror_url + "mods/" + basename(self.localpath)

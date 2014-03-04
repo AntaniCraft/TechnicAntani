@@ -7,9 +7,17 @@
     {% for mod in mods %}
         <li class="list-group-item">{{ mod.pretty_name }}&nbsp;<small>[{{ mod.name }}]</small><span class="clearfix"></span>
             {% for ver in mod.modcache_set.all %}
-                <span class="label label-default">{{ ver.version }}</span>
+                <span class="label label-default version-info" data-container="body"
+                      data-toggle="tooltip"
+                      data-trigger="hover"
+                      data-placement="right"
+                      title="<b>{{ ver.get_filename }}</b><br>{{ ver.md5 }}&nbsp;"
+                >{{ ver.version }}</span>
             {% endfor %}
         </li>
     {% endfor %}
     </ul>
+    <script>
+        $(".version-info").tooltip({"html" : true});
+    </script>
 {% endblock %}
