@@ -61,6 +61,18 @@ def build_all_caches():
         pc.icon_md5 = checksum_file(p.get_icon())
         pc.save()
 
+        # Copy over assets
+        if not os.path.exists(os.path.join(MODBUILD_DIR, pack)):
+            os.mkdir(os.path.join(MODBUILD_DIR, pack))
+            os.mkdir(os.path.join(MODBUILD_DIR, pack, 'resources'))
+
+        shutil.copy(os.path.join(MODPACKPATH, pack, 'assets', 'logo.png'), os.path.join(MODBUILD_DIR, pack,
+                                                                                        'resources', 'logo_180.png'))
+        shutil.copy(os.path.join(MODPACKPATH, pack, 'assets', 'icon.png'), os.path.join(MODBUILD_DIR, pack,
+                                                                                        'resources', 'icon.png'))
+        shutil.copy(os.path.join(MODPACKPATH, pack, 'assets', 'background.jpg'),
+                    os.path.join(MODBUILD_DIR, pack, 'resources', 'background.jpg'))
+
         # Cycle through every version of the pack
         for packver in p.versions.keys():
             cachedver = VersionCache.objects.all().filter(modpack=pc, version=packver).first()
