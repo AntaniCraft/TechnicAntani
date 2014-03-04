@@ -15,40 +15,20 @@
 #                                                                           #
 #############################################################################
 
-import os
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+from celery import shared_task
+from server.models import *
+from cachebuilder.pack_manager import *
+from cachebuilder.mod_manager import *
 
-# Settings for antani setup
 
-#
-# Packrepo settings
-# The packrepo is where each single repo lives
+@shared_task
+def build_all_server():
+    mm = ModManager()
+    servers = Server.objects.all()
 
-# Modpack repos path. This is the path where each repo will be cloned. Must be writable
-MODPACKPATH = os.path.join(BASE_DIR, "var", "packrepo")
-
-#
-# Modrepo settings
-#
-
-# The path the mod repo will be cloned to. Must be writable
-MODREPO_DIR = os.path.join(BASE_DIR, 'var', 'modrepo')
-
-# This is where zips are going to be assembled for the modpack.
-# This ABSOLUTELY needs to be writable by technicantani
-MODBUILD_DIR = os.path.join(BASE_DIR, 'var', 'mods')
-
-# Server build dir
-SERVERBUILD = os.path.join(BASE_DIR, 'var', 'server')
-
-# If domain is not the same change it in this setting. If unsure, ignore
-# Eg. TechnicAntani running from example.com, but mods served from mods.example.com
-SERVE_DOMAIN = ""
-
-# The webpath of the server. If unsure, ignore
-SERVE_URL = "/antani/"
-
-#
-# Os settings
-#
-GIT_EXEC = "git"
+    for server in servers:
+        versions = VersionCache.objects.filter(modpack=server.modpack)
+        for version in versions:
+            for mod in version.mods:
+                physmod = mm.get_mod(mod.slug)
+                physmod.versions[mod.versions]
