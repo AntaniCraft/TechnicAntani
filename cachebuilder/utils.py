@@ -104,7 +104,7 @@ def build_config(packname, version):
     cfg = ModCache.objects.all().filter(modInfo__name=packname+"_config").filter(version=version).first()
     if not cfg is None:
         return cfg
-    cp = os.path.join(MODPACKPATH, "config")
+    cp = os.path.join(MODPACKPATH, packname, "config")
     cz = os.path.join(MODBUILD_DIR, sanitize_path(packname) + "_" + sanitize_path(version) + "_config.zip")
     with zipfile.ZipFile(cz, "w", zipfile.ZIP_DEFLATED) as zipp1:
         rootlen = len(cp)
