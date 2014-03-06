@@ -71,7 +71,7 @@ def modpack_build(request, slug, build):
     b = VersionCache.objects.all().filter(modpack=m).filter(version=build)[0]
     result["minecraft"] = b.mcversion
     result["minecraft_md5"] = b.mcversion_checksum
-    result["forge"] = None
+    result["forge"] = b.forgever
     result["mods"] = []
     for modo in b.mods.all():
         m = {
