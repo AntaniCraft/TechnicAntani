@@ -109,7 +109,7 @@ def build_config(packname, version):
         rootlen = len(cp)
         for base, dirs, files in os.walk(cp):
             for ifile in files:
-                fn = os.path.join("config", base, ifile)
+                fn = os.path.join(base, ifile)
                 zipp1.write(fn, os.path.join("config", fn[rootlen:]))
     mi = get_mod_info_by_name(packname + "_config")
     if mi is None:
