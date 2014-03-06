@@ -84,6 +84,8 @@ def build_all_caches():
                 cachedver.mcversion_checksum = ""  # wot
                 cachedver.modpack = pc
                 cachedver.version = packver
+                cachedver.latest = p.versions[packver]['latest']
+                cachedver.recommended = p.versions[packver]['recommended']
                 cachedver.save()
 
                 # Package forge as modpack.jar. We have to see what to do in the future.
