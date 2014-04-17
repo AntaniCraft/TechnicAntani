@@ -1,4 +1,4 @@
-# TechnicAntani 2
+# TechnicAntani 2 [![Build Status](https://travis-ci.org/AntaniCraft/TechnicAntani.svg?branch=master)](https://travis-ci.org/AntaniCraft/TechnicAntani)
 
 # WARNING: This is a WIP of version 2. I've rethought all deployment system and switched to be different from TechnicSolder (aka it's catching up finally so I can do cooler things)
 

@@ -197,7 +197,6 @@ class ViewHTMLTest(DTest):
         }
         apikeys_manage(r)
         keys = ApiKey.objects.filter(key='testkey')
-        print(keys)
         self.assertTrue(len(keys) == 1)
         key = keys.first()
         self.assertEqual(key.key, 'testkey')
