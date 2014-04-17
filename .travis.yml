@@ -7,7 +7,7 @@ install:
   - "pip install -r testing.txt"
 
 before_script:
-  - "ln -sv TechnicAntani/settings.py.development TechnicAntani/settings.py"
-  - "ln -sv TechnicAntani/antanisettings.py.development  TechnicAntani/antanisettings.py"
+  - "ln -sv settings.py.development TechnicAntani/settings.py"
+  - "ln -sv antanisettings.py.development  TechnicAntani/antanisettings.py"
 
 script: "python manage.py test"
