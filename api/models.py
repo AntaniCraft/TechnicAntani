@@ -26,6 +26,9 @@ class ApiKey(models.Model):
 
 
 class ModpackCache(models.Model):
+    '''
+    Modpack entry Poing
+    '''
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255)
     url = models.CharField(max_length=255)
@@ -36,6 +39,9 @@ class ModpackCache(models.Model):
 
 
 class ModInfoCache(models.Model):
+    '''
+    Mod metadata cache (multiple versions)
+    '''
     name = models.CharField(max_length=255)
     pretty_name = models.CharField(max_length=255)
     author = models.CharField(max_length=255)
@@ -44,6 +50,9 @@ class ModInfoCache(models.Model):
 
 
 class ModCache(models.Model):
+    '''
+    Single modfile cache
+    '''
     localpath = models.CharField(max_length=255)
     version = models.CharField(max_length=32)
     md5 = models.CharField(max_length=32)
@@ -58,6 +67,9 @@ class ModCache(models.Model):
 
 
 class VersionCache(models.Model):
+    '''
+    Modpack single version (cache)
+    '''
     version = models.CharField(max_length=32)
     recommended = models.BooleanField()
     latest = models.BooleanField()
