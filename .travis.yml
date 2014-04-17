@@ -1,8 +1,10 @@
 language: python
 python:
-  - 3.2
   - 3.3
+env:
+  -
+install:
+  - "pip install -r testing.txt"
+  - "pip install ."
 
-install: "pip install -r testing.txt"
-
-script: "./manage.py test"
+script: "python manage.py test"
