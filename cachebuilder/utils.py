@@ -29,7 +29,7 @@ import logging
 import re
 import uuid
 
-filename_regex = re.compile("[\.a-zA-Z0-9_-]+\.\w{3}")
+filename_regex = re.compile("[^/]+\.\w{3}")
 cleaner_regex = re.compile("\W+")
 
 
