@@ -156,7 +156,7 @@ def build_mod(name, version, mm):
             zip.write(os.path.join(MODREPO_DIR, mod.slug, fn), os.path.join("mods", fn))
     if mod.type == "prepackaged":
         fn = os.path.basename(mod.versions[version]["file"])
-        shutil.copy(os.path.join(MODREPO_DIR, sanitize_path(mod.name), fn), mz)
+        shutil.copy(os.path.join(MODREPO_DIR, sanitize_path(mod.slug), fn), mz)
 
     mi = get_mod_info_by_name(name)
     if mi is None:
