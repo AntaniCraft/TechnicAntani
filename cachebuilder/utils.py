@@ -17,6 +17,7 @@
 
 # This file has the main actions performed by the scripts.
 # It's here the magic happens
+from builtins import print
 
 from api.models import ModCache, ModInfoCache
 from cachebuilder.mod_manager import ModManager
@@ -135,6 +136,7 @@ def build_mod(name, version, mm):
     """
     Builds the mod into the cache. Modmanager is passed for performance reasons
     """
+    print("Building " + name)
     log = logging.getLogger("build_mod")
     mc = ModCache.objects.all().filter(modInfo__name=name).filter(version=version).first()
     if not mc is None:
